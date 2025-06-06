@@ -31,27 +31,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set reusable strings
-      # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
-      id: strings
-      shell: bash
-      run: |
-        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-
-    - name: Prepare ccache timestamp
-        id: ccache_cache_timestamp
-        shell: cmake -P {0}
-        run: |
-        string(TIMESTAMP current_date "%Y-%m-%d-%H;%M;%S" UTC)
-        message("::set-output name=timestamp::${current_date}")
-
-    - name: ccache cache files
-        uses: actions/cache@v1.1.0
-        with:
-        path: .ccache
-        key: ${ { matrix.config.name } }-ccache-${ { steps.ccache_cache_timestamp.outputs.timestamp } }
-        restore-keys: |
-            ${ { matrix.config.name } }-ccache-
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
 
     - name: Build
+      shell: bash
       run: ./build.sh
