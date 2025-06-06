@@ -4,6 +4,7 @@ echo "Installing dependencies..."
 pacman -S \
   bison \
   flex \
+  mingw-w64-ucrt-x86_64-gcc \
   mingw-w64-ucrt-x86_64-cmake \
   mingw-w64-ucrt-x86_64-make \
   mingw-w64-ucrt-x86_64-msmpi \
