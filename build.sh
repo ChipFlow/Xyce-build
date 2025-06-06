@@ -105,7 +105,7 @@ if [ "$OS" == "Linux" ]; then
       DISTRO='unknown'
   fi
 
-  if [ "$DISTRO" == "ubuntu"]; then
+  if [ "$DISTRO" == "ubuntu" ]; then
     ./scripts/install-ubuntu.sh
 
     SUITESPARSE_INC=/usr/include/suitesparse
@@ -138,6 +138,30 @@ elif [ "$OS" == "Darwin" ]; then
   LIBRARY_PATH=$HOMEBREW_PREFIX/lib
   INCLUDE_PATH=$HOMEBREW_PREFIX/include
   export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
+elif [ "$OS" == "Windows" ]; then
+  GCC_VERSION=$(gcc --version)
+  if [ ! -z $? ]; then
+    echo "No gcc found"
+    exit 1
+  fi
+  if [[ $GCC_VERSION == *"x86_64-w64-mingw32"* ]]; then
+    echo "Building for MingGW-w64"
+    # check we have pacman
+    pacman --version
+
+    ./scripts/windows-install.sh
+
+    SUITESPARSE_INC=/ucrt64/include/suitesparse
+    LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
+    INCLUDE_PATH=/ucrt64/include
+    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
+
+
+  else
+    echo "Windows GCC environment unknown"
+    exit 1
+  fi
+
 fi
 
 if [ -n "$FETCH_SOURCE" ]; then
