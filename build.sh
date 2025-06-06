@@ -86,11 +86,14 @@ case "$OSTYPE" in
   linux*)   OS="Linux" ;;
   darwin*)  OS="Darwin" ;;
   win*)     OS="Windows" ;;
-  msys*)    OS="Windows_Bash" ;;
+  msys*)    OS="Windows_MSYS2" ;;
   cygwin*)  OS="Cygwin" ;;
   bsd*)     OS="BSD" ;;
   *)        echo "unknown: $OSTYPE" ;;
 esac
+
+echo "Determined that OS is $OS"
+echo
 
 if [ "$OS" == "Linux" ]; then
   if [ -e /etc/lsb-release ]; then
@@ -138,13 +141,13 @@ elif [ "$OS" == "Darwin" ]; then
   LIBRARY_PATH=$HOMEBREW_PREFIX/lib
   INCLUDE_PATH=$HOMEBREW_PREFIX/include
   export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
-elif [ "$OS" == "Windows" ]; then
+elif [ "$OS" == "Windows_MSYS2" ]; then
   GCC_VERSION=$(gcc --version)
-  if [ ! -z $? ]; then
+  if [ -z $? ]; then
     echo "No gcc found"
     exit 1
   fi
-  if [[ $GCC_VERSION == *"x86_64-w64-mingw32"* ]]; then
+  if [[ $GCC_VERSION == *"MinGW-W64"* ]]; then
     echo "Building for MingGW-w64"
     # check we have pacman
     pacman --version
