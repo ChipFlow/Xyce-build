@@ -31,6 +31,7 @@ cmake \
 -DTrilinos_ENABLE_Kokkos=ON \
 -DKokkosClassic_DefaultNode:STRING="Kokkos::Compat::KokkosOpenMPWrapperNode" \
 -DTrilinos_ENABLE_Zoltan=ON \
+-DTrilinos_ENABLE_Tpetra=ON \
 -DTrilinos_ENABLE_ALL_OPTIONAL_PACKAGES=OFF \
 -DTrilinos_ENABLE_CXX11=ON \
 -DTrilinos_GENERATE_REPO_VERSION_FILE=OFF \
