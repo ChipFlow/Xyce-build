@@ -14,3 +14,6 @@ pacman -S \
   mingw-w64-ucrt-x86_64-msmpi \
   mingw-w64-ucrt-x86_64-pkg-config
 
+curl -L -O https://github.com/microsoft/Microsoft-MPI/releases/download/v10.1.1/msmpisetup.exe
+./msmpisetup.exe -unattend -force
+export PATH="/c/Program Files/Microsoft MPI/Bin/$PATH"
