@@ -24,6 +24,8 @@ jobs:
         os: [ubuntu-latest, windows-latest, mac-latest]
 
     steps:
+    - run: git config --global core.autocrlf false
+
     - uses: actions/checkout@v4
 
     - name: ccache
@@ -42,10 +44,14 @@ jobs:
         msystem: UCRT64
         update: true
         install: |
+          base-devel
+          autotools
           git
           bison
           flex
           pacman
+          mingw-w64-ucrt-x86_64-toolchain
+          mingw-w64-ucrt-x86_64-autotools
           mingw-w64-ucrt-x86_64-gcc
           mingw-w64-ucrt-x86_64-cmake
           mingw-w64-ucrt-x86_64-make
@@ -58,6 +64,12 @@ jobs:
           mingw-w64-ucrt-x86_64-pkg-config
 
 
-    - name: Build
+    - name: Build ${{ matrix.os }}
+      if: matrix.os == 'windows-latest'
+      shell: msys2 {0}
+      run: ./build.sh
+
+    - name: Build ${{ matrix.os }}
+      if: matrix.os != 'windows-latest'
       shell: bash
       run: ./build.sh
