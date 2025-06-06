@@ -1,0 +1,54 @@
+#!/bin/bash
+
+mkdir -p _build/trilinos
+mkdir -p _build/install
+
+echo "Configuring Trilinos..."
+cmake \
+-DCMAKE_C_COMPILER=mpicc \
+-DCMAKE_CXX_COMPILER=mpicxx \
+-DCMAKE_Fortran_COMPILER=mpif77 \
+-DTrilinos_ENABLE_NOX=ON \
+  -DNOX_ENABLE_LOCA=ON \
+-DTrilinos_ENABLE_EpetraExt=ON \
+  -DEpetraExt_BUILD_BTF=ON \
+  -DEpetraExt_BUILD_EXPERIMENTAL=ON \
+  -DEpetraExt_BUILD_GRAPH_REORDERINGS=ON \
+-DTrilinos_ENABLE_TrilinosCouplings=ON \
+-DTrilinos_ENABLE_Ifpack=ON \
+-DTrilinos_ENABLE_Isorropia=ON \
+-DTrilinos_ENABLE_AztecOO=ON \
+-DTrilinos_ENABLE_Belos=ON \
+-DTrilinos_ENABLE_Teuchos=ON \
+-DTrilinos_ENABLE_COMPLEX_DOUBLE=ON \
+-DTrilinos_ENABLE_Amesos=ON \
+-DAmesos_ENABLE_KLU=ON \
+-DTrilinos_ENABLE_Amesos2=ON \
+-DAmesos2_ENABLE_KLU2=ON \
+-DAmesos2_ENABLE_Basker=ON \
+-DTrilinos_ENABLE_Sacado=ON \
+-DTrilinos_ENABLE_Stokhos=ON \
+-DTrilinos_ENABLE_Kokkos=ON \
+-DKokkosClassic_DefaultNode:STRING="Kokkos::Compat::KokkosOpenMPWrapperNode" \
+-DTrilinos_ENABLE_Zoltan=ON \
+-DTrilinos_ENABLE_ALL_OPTIONAL_PACKAGES=OFF \
+-DTrilinos_ENABLE_CXX11=ON \
+-DTrilinos_GENERATE_REPO_VERSION_FILE=OFF \
+-DTPL_ENABLE_AMD=ON \
+-DTPL_ENABLE_BLAS=ON \
+-DTPL_ENABLE_LAPACK=ON \
+-DTPL_ENABLE_MPI=ON \
+-DTPL_AMD_INCLUDE_DIRS=/usr/include/suitesparse \
+-DAMD_LIBRARY_DIRS=/usr/lib/x86_64-linux-gnu \
+-DCMAKE_INCLUDE_PATH=/usr/include \
+-DCMAKE_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu \
+-DTrilinos_SET_GROUP_AND_PERMISSIONS_ON_INSTALL_BASE_DIR="$ARCHDIR" \
+-DCMAKE_INSTALL_PREFIX=$ARCHDIR \
+-S $ROOT/_source/trilinos \
+-B $ROOT/_build/trilinos
+
+echo "Building Trilinos..."
+NCPUS=$(nproc)
+make -C _build/trilinos -j $NCPUS
+make -C _build/trilinos install
+
