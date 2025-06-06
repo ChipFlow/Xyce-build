@@ -13,7 +13,7 @@ pacman -S \
   mingw-w64-ucrt-x86_64-fftw \
   mingw-w64-ucrt-x86_64-suitesparse \
   mingw-w64-ucrt-x86_64-msmpi \
-  mingw-w64-ucrt-x86_64-pkg-config
+  mingw-w64-ucrt-x86_64-pkgconf
 
 curl -L -O https://github.com/microsoft/Microsoft-MPI/releases/download/v10.1.1/msmpisetup.exe
 ./msmpisetup.exe -unattend -force
