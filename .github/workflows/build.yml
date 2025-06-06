@@ -44,7 +44,6 @@ jobs:
         msystem: UCRT64
         update: true
         install: |
-          base-devel
           autotools
           git
           bison

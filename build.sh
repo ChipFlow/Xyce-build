@@ -81,6 +81,7 @@ done
 
 shift  $((OPTIND-1))
 CONFIGURE_OPTS="$CONFIGURE_OPTS $@"
+TRILINOS_CONFIGURE_OPTS=""
 
 case "$OSTYPE" in
   linux*)   OS="Linux" ;;
@@ -154,6 +155,7 @@ elif [ "$OS" == "Windows_MSYS2" ]; then
 
     ./scripts/windows-install.sh
 
+    TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64 -D "
     SUITESPARSE_INC=/ucrt64/include/suitesparse
     LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
     INCLUDE_PATH=/ucrt64/include
@@ -196,12 +198,12 @@ else
 fi
 
 if [ -n "$BUILD_TRILINOS" ]; then
-  ./scripts/build-trilinos.sh
+  ./scripts/build-trilinos.sh $TRILINOS_CONFIGURE_OPTS
 fi
 
 
 if [ -n "$BUILD_XYCE" ]; then
-  ./scripts/build-xyce.sh
+  ./scripts/build-xyce.sh $CONFIGURE_OPTS
 fi
 
 if [ -n "$INSTALL_XYCE" ]; then

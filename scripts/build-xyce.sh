@@ -1,7 +1,10 @@
 #!/bin/bash
 mkdir -p "$ROOT/_build/xyce"
 
-echo "Configuring Xyce..."
+CONFIGURE_OPTS="$@"
+
+echo "Configuring Xyce $CONFIGURE_OPTS"
+
 export LDFLAGS="-L$ARCHDIR/lib $LDFLAGS"
 export CPPFLAGS="-I$ARCHDIR/include $CPPFLAGS"
 

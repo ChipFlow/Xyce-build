@@ -3,7 +3,9 @@
 mkdir -p _build/trilinos
 mkdir -p _build/install
 
-echo "Configuring Trilinos..."
+CONFIGURE_OPTS="$@"
+
+echo "Configuring Trilinos $CONFIGURE_OPTS"
 cmake \
 -DCMAKE_C_COMPILER=mpicc \
 -DCMAKE_CXX_COMPILER=mpicxx \
