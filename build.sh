@@ -93,7 +93,14 @@ case "$OSTYPE" in
 esac
 
 if [ "$OS" == "Linux" ]; then
-  DISTRO=$( cat /etc/*-release | tr [:upper:] [:lower:] | grep -Poi '(debian|ubuntu|red hat|centos|nameyourdistro)' | uniq )
+  if [ -e /etc/lsb-release ]; then
+    DISTRO=$( cat /etc/lsb-release | tr [:upper:] [:lower:] | grep -Poi '(debian|ubuntu|red hat|centos)' | uniq )
+  elif [ -e /etc/os-release ]; then
+    DISTRO=$( cat /etc/os-release | tr [:upper:] [:lower:] | grep -Poi '(debian|ubuntu|red hat|centos)' | uniq )
+  else
+    DISTRO='unknown'
+  fi
+
   if [ -z $DISTRO ]; then
       DISTRO='unknown'
   fi
@@ -107,7 +114,7 @@ if [ "$OS" == "Linux" ]; then
     export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
 
   else
-    echo "Unknown Linux distro - please figure out the packages to install and submit an issue"
+    echo "Unknown Linux distro - please figure out the packages to install and submit an issue!"
     exit 1
   fi
 elif [ "$OS" == "Darwin" ]; then
