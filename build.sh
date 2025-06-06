@@ -141,10 +141,17 @@ fi
 export CFLAGS="$CFLAGS -fPIC"
 export CXXFLAGS="$CFLAGS -fPIC -std=c++17 -Wno-unused-command-line-argument"
 
+CCACHE=$(which ccache >/dev/null || echo '')
 # Use MPI compilers
-export CXX=mpicxx
-export CC=mpicc
-export F77=mpif77
+if [ -z "$CCACHE" ]; then
+  export CXX=mpicxx
+  export CC=mpicc
+  export F77=mpif77
+else
+  export CXX="$CCACHE mpicxx"
+  export CC="$CCACGE mpicc"
+  export F77=mpif77
+fi
 
 export ARCHDIR="$ROOT/_build/libs"
 
