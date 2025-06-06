@@ -21,12 +21,7 @@ jobs:
 
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        build_type: [Release]
-        include:
-          - os: windows-latest
-          - os: ubuntu-latest
-          - os: mac-latest
+        os: [ubuntu-latest, windows-latest, mac-latest]
 
     steps:
     - uses: actions/checkout@v4
@@ -40,6 +35,13 @@ jobs:
       with:
         path: _sources
         key: ${{ runner.os }}-sources
+
+    - uses: msys2/setup-msys2@v2
+      if: matrix.os == 'windows-latest'
+      with:
+        msystem: UCRT64
+        update: true
+        install: git mingw-w64-ucrt-x86_64-gcc
 
     - name: Build
       shell: bash
