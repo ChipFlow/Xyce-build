@@ -34,6 +34,13 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
 
+    - name: Cache Sources
+      id: cache-sources
+      uses: actions/cache@v4
+      with:
+        path: _sources
+        key: ${{ runner.os }}-sources
+
     - name: Build
       shell: bash
       run: ./build.sh
