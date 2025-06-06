@@ -106,7 +106,7 @@ if [ "$OS" == "Linux" ]; then
   fi
 
   if [ "$DISTRO" == "ubuntu" ]; then
-    ./scripts/install-ubuntu.sh
+    ./scripts/ubuntu-install.sh
 
     SUITESPARSE_INC=/usr/include/suitesparse
     LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
