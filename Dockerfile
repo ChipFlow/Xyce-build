@@ -35,6 +35,9 @@ ENV ROOT=/home/builder
 ENV CFLAGS="-O3"
 ENV CXXFLAGS="$CFLAGS -std=c++17"
 ENV ARCHDIR=$ROOT/_build/libs
+ENV SUITESPARSE_INC=/usr/include/suitesparse
+ENV LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
+ENV INCLUDE_PATH=/usr/include
 
 # Use MPI compilers
 ENV CXX=mpicxx

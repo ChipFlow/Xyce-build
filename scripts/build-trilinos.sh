@@ -38,17 +38,17 @@ cmake \
 -DTPL_ENABLE_BLAS=ON \
 -DTPL_ENABLE_LAPACK=ON \
 -DTPL_ENABLE_MPI=ON \
--DTPL_AMD_INCLUDE_DIRS=/usr/include/suitesparse \
--DAMD_LIBRARY_DIRS=/usr/lib/x86_64-linux-gnu \
--DCMAKE_INCLUDE_PATH=/usr/include \
--DCMAKE_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu \
+-DTPL_AMD_INCLUDE_DIRS="$SUITESPARSE_INC" \
+-DAMD_LIBRARY_DIRS="$LIBRARY_PATH" \
+-DCMAKE_INCLUDE_PATH="$INCLUDE_PATH" \
+-DCMAKE_LIBRARY_PATH="$LIBRARY_PATH" \
 -DTrilinos_SET_GROUP_AND_PERMISSIONS_ON_INSTALL_BASE_DIR="$ARCHDIR" \
--DCMAKE_INSTALL_PREFIX=$ARCHDIR \
--S $ROOT/_source/trilinos \
--B $ROOT/_build/trilinos
+-DCMAKE_INSTALL_PREFIX="$ARCHDIR" \
+-S "$ROOT/_source/trilinos" \
+-B "$ROOT/_build/trilinos"
 
 echo "Building Trilinos..."
 NCPUS=$(nproc)
-make -C _build/trilinos -j $NCPUS
+make -C _build/trilinos -j $NCPUS 2>&1 | tee "$ROOT/_build/build-trilinos.log"
 make -C _build/trilinos install
 
