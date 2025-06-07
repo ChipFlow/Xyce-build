@@ -153,7 +153,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
 
   ./scripts/windows-install.sh
 
-  TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64 -D "
+  TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64"
   SUITESPARSE_INC=/ucrt64/include/suitesparse
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
   INCLUDE_PATH=/ucrt64/include
