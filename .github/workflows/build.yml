@@ -51,7 +51,6 @@ jobs:
           git
           bison
           flex
-          pacman
           mingw-w64-ucrt-x86_64-toolchain
           mingw-w64-ucrt-x86_64-autotools
           mingw-w64-ucrt-x86_64-gcc
@@ -63,7 +62,6 @@ jobs:
           mingw-w64-ucrt-x86_64-fftw
           mingw-w64-ucrt-x86_64-suitesparse
           mingw-w64-ucrt-x86_64-msmpi
-          mingw-w64-ucrt-x86_64-pkg-config
 
     - name: Build for Windows (${{ matrix.os }})
       if: matrix.os == 'windows-latest'
