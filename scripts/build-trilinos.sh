@@ -10,6 +10,7 @@ cmake \
 -DCMAKE_C_COMPILER=mpicc \
 -DCMAKE_CXX_COMPILER=mpicxx \
 -DCMAKE_Fortran_COMPILER=mpif77 \
+-DTrilinos_ENABLE_Fortran=ON \
 -DTrilinos_ENABLE_NOX=ON \
   -DNOX_ENABLE_LOCA=ON \
 -DTrilinos_ENABLE_EpetraExt=ON \
