@@ -38,11 +38,14 @@ jobs:
         path: _source
         key: ${{ runner.os }}-sources
 
-    - uses: msys2/setup-msys2@v2
+    - name: Install MSYS2 and dependencies
+      uses: msys2/setup-msys2@v2
       if: matrix.os == 'windows-latest'
       with:
         msystem: UCRT64
-        update: true
+        update: false
+        release: false
+        cache: true
         install: |
           autotools
           git
