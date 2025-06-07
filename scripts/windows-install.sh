@@ -1,7 +1,7 @@
 #!/bin/bash
 d# Install dependencies using apt
 echo "Installing dependencies..."
-pacman -S \
+pacman -S --needed \
   bison \
   flex \
   mingw-w64-ucrt-x86_64-gcc \
