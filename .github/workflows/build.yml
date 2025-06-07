@@ -21,7 +21,7 @@ jobs:
 
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest, windows-latest, mac-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
     - run: git config --global core.autocrlf false
@@ -65,13 +65,12 @@ jobs:
           mingw-w64-ucrt-x86_64-msmpi
           mingw-w64-ucrt-x86_64-pkg-config
 
-
-    - name: Build ${{ matrix.os }}
+    - name: Build for Windows (${{ matrix.os }})
       if: matrix.os == 'windows-latest'
       shell: msys2 {0}
       run: ./build.sh
 
-    - name: Build ${{ matrix.os }}
+    - name: Build for Unix-like (${{ matrix.os }})
       if: matrix.os != 'windows-latest'
       shell: bash
       run: ./build.sh
