@@ -143,11 +143,6 @@ elif [[ "$OS" == "Darwin" ]]; then
   INCLUDE_PATH=$HOMEBREW_PREFIX/include
   export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
 elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
-  GCC_VERSION=$(gcc --version)
-  if [ -z $? ]; then
-    echo "No gcc found"
-    exit 1
-  fi
   # check we have pacman
   pacman --version
 
