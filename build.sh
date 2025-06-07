@@ -96,7 +96,7 @@ esac
 echo "Determined that OS is $OS"
 echo
 
-if [ "$OS" == "Linux" ]; then
+if [[ "$OS" == "Linux" ]]; then
   if [ -e /etc/lsb-release ]; then
     DISTRO=$( cat /etc/lsb-release | tr [:upper:] [:lower:] | grep -Poi '(debian|ubuntu|red hat|centos)' | uniq )
   elif [ -e /etc/os-release ]; then
@@ -109,7 +109,7 @@ if [ "$OS" == "Linux" ]; then
       DISTRO='unknown'
   fi
 
-  if [ "$DISTRO" == "ubuntu" ]; then
+  if [[ "$DISTRO" == "ubuntu" ]]; then
     ./scripts/ubuntu-install.sh
 
     SUITESPARSE_INC=/usr/include/suitesparse
@@ -121,8 +121,8 @@ if [ "$OS" == "Linux" ]; then
     echo "Unknown Linux distro - please figure out the packages to install and submit an issue!"
     exit 1
   fi
-elif [ "$OS" == "Darwin" ]; then
-  if [ -z "$HOMEBREW_PREFIX" ]; then
+elif [[ "$OS" == "Darwin" ]]; then
+  if [[ -z "$HOMEBREW_PREFIX" ]]; then
     echo "This currently only works for Homebrew. Feel free to submut a PR!"
     exit 1
   fi
@@ -142,31 +142,25 @@ elif [ "$OS" == "Darwin" ]; then
   LIBRARY_PATH=$HOMEBREW_PREFIX/lib
   INCLUDE_PATH=$HOMEBREW_PREFIX/include
   export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
-elif [ "$OS" == "Windows_MSYS2" ]; then
+elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   GCC_VERSION=$(gcc --version)
   if [ -z $? ]; then
     echo "No gcc found"
     exit 1
   fi
-  if [[ $GCC_VERSION == *"MinGW-W64"* ]]; then
-    echo "Building for MingGW-w64"
-    # check we have pacman
-    pacman --version
+  # check we have pacman
+  pacman --version
 
-    ./scripts/windows-install.sh
+  ./scripts/windows-install.sh
 
-    TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64 -D "
-    SUITESPARSE_INC=/ucrt64/include/suitesparse
-    LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
-    INCLUDE_PATH=/ucrt64/include
-    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
+  TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64 -D "
+  SUITESPARSE_INC=/ucrt64/include/suitesparse
+  LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
+  INCLUDE_PATH=/ucrt64/include
+  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
 
-
-  else
-    echo "Windows GCC environment unknown"
-    exit 1
-  fi
-
+else
+  echo "Unknown environment"
 fi
 
 if [ -n "$FETCH_SOURCE" ]; then
