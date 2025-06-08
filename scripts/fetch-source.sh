@@ -17,7 +17,13 @@ CloneOrUpdate()
 }
 
 mkdir -p _source
-CloneOrUpdate https://github.com/Xyce/Xyce master $ROOT/_source/xyce
+CloneOrUpdate https://github.com/Xyce/Xyce master $ROOT/_source/Xyce
+CloneOrUpdate https://github.com/Xyce/Xyce_Regression master $ROOT/_source/Xyce_Regression
+# See https://github.com/Xyce/XDM/issues/11
+CloneOrUpdate https://github.com/tvrusso/XDM fixsstream $ROOT/_source/XDM
+# CloneOrUpdate https://github.com/tvrusso/XDM fixsstream $ROOT/_source/XDM
+
+# Backport KokkosKernels: patch #2296 to 14.4.0
 CloneOrUpdate https://github.com/robtaylor/Trilinos win-fix $ROOT/_source/trilinos
 
 

@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+set -o pipefail
 
 mkdir -p _build/trilinos
 mkdir -p _build/install
@@ -10,6 +12,9 @@ cmake \
 -DCMAKE_C_COMPILER=mpicc \
 -DCMAKE_CXX_COMPILER=mpicxx \
 -DCMAKE_Fortran_COMPILER=mpif77 \
+-DCMAKE_INCLUDE_PATH="$INCLUDE_PATH" \
+-DCMAKE_LIBRARY_PATH="$LIBRARY_PATH" \
+-DCMAKE_INSTALL_PREFIX="$ARCHDIR" \
 -DTrilinos_ENABLE_Fortran=ON \
 -DTrilinos_ENABLE_NOX=ON \
   -DNOX_ENABLE_LOCA=ON \
@@ -44,13 +49,10 @@ cmake \
 -DTPL_ENABLE_MPI=ON \
 -DTPL_AMD_INCLUDE_DIRS="$SUITESPARSE_INC" \
 -DAMD_LIBRARY_DIRS="$LIBRARY_PATH" \
--DCMAKE_INCLUDE_PATH="$INCLUDE_PATH" \
--DCMAKE_LIBRARY_PATH="$LIBRARY_PATH" \
 -DTrilinos_SET_GROUP_AND_PERMISSIONS_ON_INSTALL_BASE_DIR="$ARCHDIR" \
--DCMAKE_INSTALL_PREFIX="$ARCHDIR" \
 $CONFIGURE_OPTS \
 -S "$ROOT/_source/trilinos" \
--B "$ROOT/_build/trilinos"
+-B "$ROOT/_build/trilinos" 2>&1 | tee "$ROOT/_build/configure-trilinos.log"
 
 echo "Building Trilinos..."
 NCPUS=$(nproc)

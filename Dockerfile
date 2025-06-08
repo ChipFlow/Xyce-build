@@ -54,6 +54,9 @@ RUN bash build-trilinos.sh
 # Build Xyce
 COPY scripts/build-xyce.sh .
 RUN bash build-xyce.sh
+# Run Regression
+COPY scripts/xyce-regression.sh .
+RUN bash xyce-regression.sh
 # Install Xyce
 COPY scripts/install-xyce.sh .
 RUN bash install-xyce.sh
@@ -63,6 +66,6 @@ RUN ls -la _install/bin/ && \
     _install/bin/Xyce --version || echo "Xyce build completed"
 
 # Set up runtime environment
-ENV PATH="/home/builder/xyce/_install/bin:$PATH"
+ENV PATH="/home/builder/Xyce/_install/bin:$PATH"
 
 CMD ["/bin/bash"]

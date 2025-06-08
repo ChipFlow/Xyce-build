@@ -1,4 +1,4 @@
-#!/bin/bash -xv
+#!/bin/bash
 set -e
 
 export ROOT=$(pwd)
@@ -16,6 +16,7 @@ Help()
    echo "  -t:                Build Trilinos only"
    echo "  -x:                Build Xyce only"
    echo "  -i:                Install Xyce in the given directory"
+   echo "  -r:                Run the regression suite"
    echo "  -h:                Display this help"
    echo "  <configure flags>: Arbitary options to pass to ./configure :"
    echo
@@ -30,6 +31,7 @@ INSTALL_DEPS=1
 FETCH_SOURCE=1
 BUILD_TRILINOS=1
 BUILD_XYCE=1
+RUN_REGRESSION=1
 INSTALL_XYCE="$ROOT/_install"
 BUILD_TYPE=release
 CFLAGS="-O3"
@@ -41,7 +43,7 @@ echo GETOPTS
 # Process the input options. Add options as needed.        #
 ############################################################
 # Get the options
-while getopts ":hdtxsi:" option; do
+while getopts ":hdtxsri:" option; do
   case $option in
     h) # display Help
         Help
@@ -51,24 +53,29 @@ while getopts ":hdtxsi:" option; do
         CFLAGS="-g -O0"
         ;;
     s) # Fetch source only
-        echo "fetcjing source"
-        BUILD_TRILINOS=0
-        BUILD_XYCE=0
+        unset BUILD_TRILINOS
+        unset BUILD_XYCE
         unset INSTALL_XYCE
         ;;
     t) # Build Trilinos only
         BUILD_TRILINOS=1
-        BUILD_XYCE=0
+        unset BUILD_XYCE
         unset INSTALL_XYCE
         ;;
     x) # Build Xyce only
-        BUILD_TRILINOS=0
+        unset BUILD_TRILINOS
         BUILD_XYCE=1
         unset INSTALL_XYCE
         ;;
+    r) # Run regression for Xyce
+        unset BUILD_TRILINOS
+        unset BUILD_XYCE
+        RUN_REGRESSION=1
+        unset INSTALL_XYCE
+        ;;
     i) # Install
-        BUILD_TRILINOS=0
-        BUILD_XYCE=0
+        unset BUILD_TRILINOS
+        unset BUILD_XYCE
         INSTALL_XYCE=${OPTARG}
         ;;
     \?) # Invalid option
@@ -115,7 +122,8 @@ if [[ "$OS" == "Linux" ]]; then
     SUITESPARSE_INC=/usr/include/suitesparse
     LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
     INCLUDE_PATH=/usr/include
-    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
+    BOOST_ROOT=/usr
+    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
 
   else
     echo "Unknown Linux distro - please figure out the packages to install and submit an issue!"
@@ -127,9 +135,9 @@ elif [[ "$OS" == "Darwin" ]]; then
     exit 1
   fi
 
-  HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autogen open-mpi
+  HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autogen open-mpi boost-python3 boost numpy scipy
   PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/lapack/lib/pkgconfig"
-  PATH="$HOMEBREW_PREFIX/opt/bison/bin:$HOMEBREW_PREFIX/opt/flex/bin:$PATH"
+  PATH="$HOMEBREW_PREFIX/opt/bison/bin:$HOMEBREW_PREFIX/opt/flex/bin:$HOMEBREW_PREFIX/opt/python/libexec/bin:$PATH"
   LDFLAGS="-L$HOMEBREW_PREFIX/opt/bison/lib -L$HOMEBREW_PREFIX/opt/flex/lib"
   CPPFLAGS="-I$HOMEBREW_PREFIX/opt/bison/include -I$HOMEBREW_PREFIX/opt/flex/include"
   LDFLAGS="-L$HOMEBREW_PREFIX/opt/libomp/lib -L$HOMEBREW_PREFIX/lib $LDFLAGS"
@@ -141,7 +149,11 @@ elif [[ "$OS" == "Darwin" ]]; then
   SUITESPARSE_INC=$HOMEBREW_PREFIX/include/suitesparse
   LIBRARY_PATH=$HOMEBREW_PREFIX/lib
   INCLUDE_PATH=$HOMEBREW_PREFIX/include
-  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
+  BOOST_ROOT=$HOMEBREW_PREFIX
+  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
+
+  NCPUS=$(sysctl -n hw.logicalcpu)
+  export NCPUS
 elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   # check we have pacman
   pacman --version
@@ -152,8 +164,11 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   SUITESPARSE_INC=/ucrt64/include/suitesparse
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
   INCLUDE_PATH=/ucrt64/include
-  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
+  BOOST_ROOT=/ucrt64
+  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
 
+  NCPUS=$NUMBER_OF_PROCESSORS
+  export NCPUS
 else
   echo "Unknown environment"
 fi
@@ -187,15 +202,22 @@ else
 fi
 
 if [ -n "$BUILD_TRILINOS" ]; then
-  ./scripts/build-trilinos.sh $TRILINOS_CONFIGURE_OPTS
+  ./scripts/build-trilinos.sh $TRILINOS_CONFIGURE_OPTS || exit 1
 fi
 
-
 if [ -n "$BUILD_XYCE" ]; then
-  ./scripts/build-xyce.sh $CONFIGURE_OPTS
+  ./scripts/build-xdm.sh || exit 1
+  ./scripts/build-xyce.sh $CONFIGURE_OPTS || exit 1
+  ./scripts/build-xyce-cmake.sh || exit 1
+fi
+
+if [ -n "$RUN_REGRESSION" ]; then
+  ./scripts/xyce-regression.sh $CONFIGURE_OPTS || exit 1
 fi
 
 if [ -n "$INSTALL_XYCE" ]; then
   export INSTALL_PATH="$INSTALL_XYCE"
-  ./scripts/install-xyce.sh
+  ./scripts/install-xyce.sh || exit 1
 fi
+
+
