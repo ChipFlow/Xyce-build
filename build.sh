@@ -135,7 +135,7 @@ elif [[ "$OS" == "Darwin" ]]; then
     exit 1
   fi
 
-  HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autogen open-mpi boost-python3 boost numpy scipy
+  HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autoconf automake libtool pkgconf open-mpi boost-python3 boost numpy scipy
   PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/lapack/lib/pkgconfig"
   PATH="$HOMEBREW_PREFIX/opt/bison/bin:$HOMEBREW_PREFIX/opt/flex/bin:$HOMEBREW_PREFIX/opt/python/libexec/bin:$PATH"
   LDFLAGS="-L$HOMEBREW_PREFIX/opt/bison/lib -L$HOMEBREW_PREFIX/opt/flex/lib"
