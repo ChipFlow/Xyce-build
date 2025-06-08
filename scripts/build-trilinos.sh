@@ -55,7 +55,7 @@ $CONFIGURE_OPTS \
 -B "$ROOT/_build/trilinos" 2>&1 | tee "$ROOT/_build/configure-trilinos.log"
 
 echo "Building Trilinos..."
-NCPUS=$(nproc)
+NCPUS="${NCPUS:-$(nproc)}"
 make -C _build/trilinos -j $NCPUS 2>&1 | tee "$ROOT/_build/build-trilinos.log"
 make -C _build/trilinos install
 
