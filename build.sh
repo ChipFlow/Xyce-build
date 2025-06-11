@@ -183,7 +183,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
     -DCMAKE_Fortran_COMPILE_OPTIONS_PIE='-PIC'
     -DCMAKE_Fortran_RESPONSE_FILE_LINK_FLAG='-Wl,@'
     -DCMAKE_Fortran_COMPILE_OPTIONS_PREPROCESS_ON='-fpp'
-    -DCMAKE_Fortran_PREPROCESS_SOURCE='<CMAKE_Fortran_COMPILER> -fpp <DEFINES> <INCLUDES> <FLAGS> -F <SOURCE> -o <PREPROCESSED_SOURCE>'"
+    -DCMAKE_Fortran_PREPROCESS_SOURCE='<CMAKE_Fortran_COMPILER> \-fpp <DEFINES> <INCLUDES> <FLAGS> \-F <SOURCE> \-o <PREPROCESSED_SOURCE>'"
   export TRILINOS_CONFIGURE_OPTS
 else
   echo "Unknown environment"
