@@ -46,7 +46,7 @@ jobs:
 
     - name: Install MSYS2 dependencies
       uses: msys2/setup-msys2@v2
-      if: contains(matrix.os, 'windows-latest')
+      if: contains(matrix.os, 'windows')
       with:
         msystem: UCRT64
         update: false
@@ -61,6 +61,7 @@ jobs:
           mingw-w64-ucrt-x86_64-autotools
           mingw-w64-ucrt-x86_64-gcc
           mingw-w64-ucrt-x86_64-cmake
+          mingw-w64-ucrt-x86_64-ccache
           mingw-w64-ucrt-x86_64-make
           mingw-w64-ucrt-x86_64-msmpi
           mingw-w64-ucrt-x86_64-openblas64
@@ -74,12 +75,12 @@ jobs:
           mingw-w64-ucrt-x86_64-python
 
     - name: Build for Windows (${{ matrix.os }})
-      if: contains(matrix.os, 'windows-latest')
+      if: contains(matrix.os, 'windows')
       shell: msys2 {0}
       run: ./build.sh
 
     - name: Build for Unix-like (${{ matrix.os }})
-      if: ! contains(matrix.os, 'windows-latest')
+      if: ${{ ! contains(matrix.os, 'windows') }}
       shell: bash
       run: ./build.sh
 
