@@ -169,6 +169,22 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
 
   NCPUS=$NUMBER_OF_PROCESSORS
   export NCPUS
+
+  # Config flags needed for cmake 4.0
+  TRILINOS_CONFIGURE_OPTS='
+    -DCMAKE_Fortran_FLAGS_INIT=" "
+    -DCMAKE_Fortran_FLAGS_DEBUG_INIT=" -g"
+    -DCMAKE_Fortran_FLAGS_MINSIZEREL_INIT=" -O2 -DNDEBUG"
+    -DCMAKE_Fortran_FLAGS_RELEASE_INIT=" -O4 -DNDEBUG"
+    -DCMAKE_Fortran_FLAGS_RELWITHDEBINFO_INIT=" -O2 -g -DNDEBUG"
+    -DCMAKE_Fortran_SUBMODULE_SEP="."
+    -DCMAKE_Fortran_SUBMODULE_EXT=".sub"
+    -DCMAKE_Fortran_MODDIR_FLAG="-mdir "
+    -DCMAKE_Fortran_COMPILE_OPTIONS_PIE="-PIC"
+    -DCMAKE_Fortran_RESPONSE_FILE_LINK_FLAG="-Wl,@"
+    -DCMAKE_Fortran_COMPILE_OPTIONS_PREPROCESS_ON="-fpp"
+    -DCMAKE_Fortran_PREPROCESS_SOURCE="<CMAKE_Fortran_COMPILER> -fpp <DEFINES> <INCLUDES> <FLAGS> -F <SOURCE> -o <PREPROCESSED_SOURCE>"'
+  export TRILINOS_CONFIGURE_OPTS
 else
   echo "Unknown environment"
 fi
