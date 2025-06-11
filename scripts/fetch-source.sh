@@ -5,15 +5,20 @@ CloneOrUpdate()
   url=$1
   branch=$2
   repo=$3
+  echo
+
   if [ ! -d $repo ]; then
+    echo "Cloning $url branch $branch into $repo"
     git clone --depth=1 $url -b $branch $repo
   else
+    echo "Cloning $url branch $branch into $repo"
     git -C $repo remote set-url origin $url
     git -C $repo fetch --depth=1
     git -C $repo checkout $branch
     git -C $repo prune --expire now
     git -C $repo repack -a -d
   fi
+  echo
 }
 
 mkdir -p _source
