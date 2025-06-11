@@ -29,10 +29,10 @@ Help()
 
 INSTALL_DEPS=1
 FETCH_SOURCE=1
-BUILD_TRILINOS=0
-BUILD_XYCE=0
-RUN_REGRESSION=0
-#INSTALL_XYCE="$ROOT/_install"
+BUILD_TRILINOS=1
+BUILD_XYCE=1
+RUN_REGRESSION=1
+INSTALL_XYCE="$ROOT/_install"
 BUILD_TYPE=release
 CFLAGS="-O3"
 CONFIGURE_OPTS=""
@@ -121,8 +121,8 @@ if [[ "$OS" == "Linux" ]]; then
 
     SUITESPARSE_INC=/usr/include/suitesparse
     LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
-    INCLUDE_PATH=/usr/include BOOST_ROOT=/usr
-    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
+    INCLUDE_PATH=/usr/include
+    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
 
   else
     echo "Unknown Linux distro - please figure out the packages to install and submit an issue!"
@@ -169,27 +169,11 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
   INCLUDE_PATH=/ucrt64/include
   BOOST_ROOT=/ucrt64
+  PYTHON=/ucrt64/usr/bin/python3
   export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
 
   NCPUS=$NUMBER_OF_PROCESSORS
   export NCPUS
-
-  # Config flags needed for cmake 4.0
-  export FORTRAN_PREPROCESS='<CMAKE_Fortran_COMPILER> -fpp <DEFINES> <INCLUDES> <FLAGS> -F <SOURCE> -o <PREPROCESSED_SOURCE>'
-  TRILINOS_CONFIGURE_OPTS="
-    -DCMAKE_Fortran_FLAGS_INIT=' '
-    -DCMAKE_Fortran_FLAGS_DEBUG_INIT=' -g'
-    -DCMAKE_Fortran_FLAGS_MINSIZEREL_INIT=' -O2 -DNDEBUG'
-    -DCMAKE_Fortran_FLAGS_RELEASE_INIT=' -O4 -DNDEBUG'
-    -DCMAKE_Fortran_FLAGS_RELWITHDEBINFO_INIT=' -O2 -g -DNDEBUG'
-    -DCMAKE_Fortran_SUBMODULE_SEP='.'
-    -DCMAKE_Fortran_SUBMODULE_EXT='.sub'
-    -DCMAKE_Fortran_MODDIR_FLAG='-mdir '
-    -DCMAKE_Fortran_COMPILE_OPTIONS_PIE='-PIC'
-    -DCMAKE_Fortran_RESPONSE_FILE_LINK_FLAG='-Wl,@'
-    -DCMAKE_Fortran_COMPILE_OPTIONS_PREPROCESS_ON='-fpp'
-    -DCMAKE_Fortran_PREPROCESS_SOURCE='<CMAKE_Fortran_COMPILER> -fpp <DEFINES> <INCLUDES> <FLAGS> -F <SOURCE> -o <PREPROCESSED_SOURCE>'"
-  export TRILINOS_CONFIGURE_OPTS
 else
   echo "Unknown environment"
 fi
@@ -205,10 +189,12 @@ export CXXFLAGS="$CFLAGS -fPIC -std=c++17 -Wno-unused-command-line-argument"
 CCACHE=$(which ccache >/dev/null || echo '')
 # Use MPI compilers
 if [ -z "$CCACHE" ]; then
+  echo "ccache not found"
   export CXX=mpicxx
   export CC=mpicc
   export F77=mpif77
 else
+  echo "ccache found, using $CCACHE"
   export CXX="$CCACHE mpicxx"
   export CC="$CCACGE mpicc"
   export F77=mpif77
