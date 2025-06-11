@@ -18,9 +18,9 @@ cmake \
 -DPYTHON_LIBRARY=$(python -c "import sysconfig; print(sysconfig.get_config_var('LIBDIR'))") \
 $CONFIGURE_OPTS \
 -S "$ROOT/_source/XDM" \
--B "$ROOT/_build/XDM" 2>&1 | tee "$ROOT/_build/XDM-configure.log"
+-B "$ROOT/_build/XDM" 2>&1 | tee "$ROOT/_build/configure-XDM.log"
 
 echo "Building XDM..."
 NCPUS="${NCPUS:-$(nproc)}"
-make -C _build/XDM -j $NCPUS 2>&1 | tee "$ROOT/_build/XDM-build.log"
+make -C _build/XDM -j $NCPUS 2>&1 | tee "$ROOT/_build/build-XDM.log"
 
