@@ -121,8 +121,7 @@ if [[ "$OS" == "Linux" ]]; then
 
     SUITESPARSE_INC=/usr/include/suitesparse
     LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
-    INCLUDE_PATH=/usr/include
-    BOOST_ROOT=/usr
+    INCLUDE_PATH=/usr/include BOOST_ROOT=/usr
     export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
 
   else
@@ -136,12 +135,13 @@ elif [[ "$OS" == "Darwin" ]]; then
   fi
 
   HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autoconf automake libtool pkgconf open-mpi boost-python3 boost numpy scipy
-  PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/lapack/lib/pkgconfig"
+  PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/lapack/lib/pkgconfig:$HOMEBREW_PREFIX//opt/openblas/lib/pkgconfig"
   PATH="$HOMEBREW_PREFIX/opt/bison/bin:$HOMEBREW_PREFIX/opt/flex/bin:$HOMEBREW_PREFIX/opt/python/libexec/bin:$PATH"
   LDFLAGS="-L$HOMEBREW_PREFIX/opt/bison/lib -L$HOMEBREW_PREFIX/opt/flex/lib"
   CPPFLAGS="-I$HOMEBREW_PREFIX/opt/bison/include -I$HOMEBREW_PREFIX/opt/flex/include"
-  LDFLAGS="-L$HOMEBREW_PREFIX/opt/libomp/lib -L$HOMEBREW_PREFIX/lib $LDFLAGS"
-  CPPFLAGS="-I/$HOMEBREW_PREFIX/opt/libomp/include -I$HOMEBREW_PREFIX/include/suitesparse -I$HOMEBREW_PREFIX/include $CPPFLAGS"
+  LDFLAGS="-L$HOMEBREW_PREFIX/opt/libomp/lib -L$HOMEBREW_PREFIX/lib $LDFLAGS -L$HOMEBREW_PREFIX//opt/openblas/lib"
+  CPPFLAGS="-I/$HOMEBREW_PREFIX/opt/libomp/include -I$HOMEBREW_PREFIX/include/suitesparse -I$HOMEBREW_PREFIX/include $CPPFLAGS -I$HOMEBREW_PREFIX//opt/openblas/include"
+
   LEX=$HOMEBREW_PREFIX/opt/flex/bin/flex
   BISON=$HOMEBREW_PREFIX/opt/bison/bin/bison
   export PKG_CONFIG_PATH PATH LDFLAGS CPPFLAGS LEX BISON
@@ -208,7 +208,7 @@ fi
 if [ -n "$BUILD_XYCE" ]; then
   ./scripts/build-xdm.sh || exit 1
   ./scripts/build-xyce.sh $CONFIGURE_OPTS || exit 1
-  ./scripts/build-xyce-cmake.sh || exit 1
+  #./scripts/build-xyce-cmake.sh || exit 1
 fi
 
 if [ -n "$RUN_REGRESSION" ]; then

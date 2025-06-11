@@ -32,5 +32,6 @@ popd
 
 echo "Building Xyce..."
 NCPUS="${NCPUS:-$(nproc)}"
-make -C _build/Xyce -j $NCPUS 2>&1 | tee "$ROOT/_build/Xyce-build.log"
+echo "make -C _build/Xyce -j $NCPUS V=1 2>&1 | tee \"$ROOT/_build/Xyce-build.log\""
+make -C _build/Xyce -j $NCPUS V=1 2>&1 | tee "$ROOT/_build/Xyce-build.log"
 
