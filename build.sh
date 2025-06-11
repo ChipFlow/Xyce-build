@@ -138,7 +138,7 @@ elif [[ "$OS" == "Darwin" ]]; then
     exit 1
   fi
 
-  HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autoconf automake libtool pkgconf open-mpi boost-python3 boost numpy scipy
+  HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autoconf automake libtool pkgconf open-mpi boost-python3 boost numpy scipy ccache
   PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/lapack/lib/pkgconfig:$HOMEBREW_PREFIX//opt/openblas/lib/pkgconfig"
   PATH="$HOMEBREW_PREFIX/opt/bison/bin:$HOMEBREW_PREFIX/opt/flex/bin:$HOMEBREW_PREFIX/opt/python/libexec/bin:$PATH"
   LDFLAGS="-L$HOMEBREW_PREFIX/opt/bison/lib -L$HOMEBREW_PREFIX/opt/flex/lib"
@@ -186,7 +186,7 @@ fi
 export CFLAGS="$CFLAGS -fPIC"
 export CXXFLAGS="$CFLAGS -fPIC -std=c++17 -Wno-unused-command-line-argument"
 
-CCACHE=$(which ccache >/dev/null || echo '')
+CCACHE=$(which ccache 2>/dev/null || echo '')
 # Use MPI compilers
 if [ -z "$CCACHE" ]; then
   echo "ccache not found"

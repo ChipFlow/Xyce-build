@@ -44,6 +44,16 @@ jobs:
         path: _source
         key: ${{ runner.os }}-sources
 
+    - name: Cache Homebrew Packages
+      if: contains(matrix.os, 'macos')
+      id: cache-homebrew-packages
+      uses: actions/cache@v4
+      env:
+        cache-name: homebrew-packages
+      with:
+        path: $(brew --prefix)
+        key: ${{ matrix.os }}-${{ env.cache-name }}-${{ hashFiles('build.sh') }}
+
     - name: Install MSYS2 dependencies
       uses: msys2/setup-msys2@v2
       if: contains(matrix.os, 'windows')
