@@ -129,6 +129,7 @@ if [[ "$OS" == "Linux" ]]; then
     exit 1
   fi
 elif [[ "$OS" == "Darwin" ]]; then
+  eval $(/opt/homebrew/bin/brew shellenv)
   if [[ -z "$HOMEBREW_PREFIX" ]]; then
     echo "This currently only works for Homebrew. Feel free to submut a PR!"
     exit 1
