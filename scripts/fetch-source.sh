@@ -18,7 +18,9 @@ CloneOrUpdate()
 
 mkdir -p _source
 CloneOrUpdate https://github.com/Xyce/Xyce master $ROOT/_source/Xyce
-CloneOrUpdate https://github.com/Xyce/Xyce_Regression master $ROOT/_source/Xyce_Regression
+
+# https://github.com/Xyce/Xyce_Regression/issues/4
+CloneOrUpdate https://github.com/robtaylor/Xyce_Regression cmake-370-windows $ROOT/_source/Xyce_Regression
 # See https://github.com/Xyce/XDM/issues/11
 CloneOrUpdate https://github.com/tvrusso/XDM fixsstream $ROOT/_source/XDM
 # CloneOrUpdate https://github.com/tvrusso/XDM fixsstream $ROOT/_source/XDM
