@@ -44,9 +44,9 @@ jobs:
         path: _source
         key: ${{ runner.os }}-sources
 
-    - name: Install MSYS2 and dependencies
+    - name: Install MSYS2 dependencies
       uses: msys2/setup-msys2@v2
-      if: matrix.os == 'windows-latest'
+      if: contains(matrix.os, 'windows-latest')
       with:
         msystem: UCRT64
         update: false
@@ -74,12 +74,12 @@ jobs:
           mingw-w64-ucrt-x86_64-python
 
     - name: Build for Windows (${{ matrix.os }})
-      if: matrix.os == 'windows-latest'
+      if: contains(matrix.os, 'windows-latest')
       shell: msys2 {0}
       run: ./build.sh
 
     - name: Build for Unix-like (${{ matrix.os }})
-      if: matrix.os != 'windows-latest'
+      if: ! contains(matrix.os, 'windows-latest')
       shell: bash
       run: ./build.sh
 
