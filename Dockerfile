@@ -30,36 +30,18 @@ RUN useradd -m -s /bin/bash builder && \
 USER builder
 WORKDIR /home/builder
 
-# Set up environment variables
-ENV ROOT=/home/builder
-ENV CFLAGS="-O3"
-ENV CXXFLAGS="$CFLAGS -std=c++17"
-ENV ARCHDIR=$ROOT/_build/libs
-ENV SUITESPARSE_INC=/usr/include/suitesparse
-ENV LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
-ENV INCLUDE_PATH=/usr/include
-
-# Use MPI compilers
-ENV CXX=mpicxx
-ENV CC=mpicc
-ENV F77=mpif77
-
 RUN ls -la
 # Fetch source
-COPY scripts/fetch-source.sh .
-RUN bash fetch-source.sh
+COPY . .
+RUN ./build.sh -s
 # Build Trilinos
-COPY scripts/build-trilinos.sh .
-RUN bash build-trilinos.sh
+RUN ./build.sh -t
 # Build Xyce
-COPY scripts/build-xyce.sh .
-RUN bash build-xyce.sh
+RUN ./build.sh -x
 # Run Regression
-COPY scripts/xyce-regression.sh .
-RUN bash xyce-regression.sh
+RUN ./build.sh -r
 # Install Xyce
-COPY scripts/install-xyce.sh .
-RUN bash install-xyce.sh
+RUN ./build.sh -i _install
 
 # Verify the installation
 RUN ls -la _install/bin/ && \
