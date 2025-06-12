@@ -15,6 +15,9 @@ sudo apt-get install -y \
     libopenmpi-dev \
     openmpi-bin \
     pkg-config \
-    git
+    git \
+    libboost-dev \
+    python3-dev \
+    libboost-python-dev
 
 
