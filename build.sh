@@ -124,6 +124,10 @@ if [[ "$OS" == "Linux" ]]; then
     INCLUDE_PATH=/usr/include
     export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
 
+    BOOST_INCLUDEDIR=/usr/include/boost
+    BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
+    CMAKE_CONFIG_DIR=/usr/lib/x86_64-linux-gnu/cmake
+    export BOOST_INCLUDEDIR BOOST_LIBRARYDIR CMAKE_CONFIG_DIR
   else
     echo "Unknown Linux distro - please figure out the packages to install and submit an issue!"
     exit 1
@@ -169,10 +173,13 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
   INCLUDE_PATH=/ucrt64/include
   BOOST_ROOT=/ucrt64
+  BOOST_INCLUDEDIR=/ucrt64/include/boost
+  BOOST_LIBRARYDIR=/ucrt64/lib/
   PYTHON=/ucrt64/usr/bin/python3
-  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
+  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
 
   NCPUS=$NUMBER_OF_PROCESSORS
+  CFLAGS="$CFLAGS -fpermissive"
   export NCPUS
 else
   echo "Unknown environment"
