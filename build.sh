@@ -32,7 +32,7 @@ FETCH_SOURCE=1
 BUILD_TRILINOS=1
 BUILD_XYCE=1
 RUN_REGRESSION=1
-INSTALL_XYCE="$ROOT/_install"
+INSTALL_XYCE=1
 BUILD_TYPE=release
 CFLAGS="-O3"
 CONFIGURE_OPTS=""
@@ -53,30 +53,40 @@ while getopts ":hdtxsri:" option; do
         CFLAGS="-g -O0"
         ;;
     s) # Fetch source only
+        FETCH_SOURCE=1
         unset BUILD_TRILINOS
         unset BUILD_XYCE
+        unset RUN_REGRESSION
         unset INSTALL_XYCE
         ;;
     t) # Build Trilinos only
+        unset FETCH_SOURCE
         BUILD_TRILINOS=1
         unset BUILD_XYCE
         unset INSTALL_XYCE
+        unset RUN_REGRESSION
         ;;
     x) # Build Xyce only
+        unset FETCH_SOURCE
         unset BUILD_TRILINOS
         BUILD_XYCE=1
         unset INSTALL_XYCE
+        unset RUN_REGRESSION
         ;;
     r) # Run regression for Xyce
+        unset FETCH_SOURCE
         unset BUILD_TRILINOS
         unset BUILD_XYCE
         RUN_REGRESSION=1
         unset INSTALL_XYCE
         ;;
     i) # Install
+        unset FETCH_SOURCE
         unset BUILD_TRILINOS
         unset BUILD_XYCE
-        INSTALL_XYCE=${OPTARG}
+        INSTALL_XYCE=1
+        INSTALL_DIR=${OPTARG}
+        unset RUN_REGRESSION
         ;;
     \?) # Invalid option
         echo "Error: Invalid option"
@@ -119,6 +129,8 @@ if [[ "$OS" == "Linux" ]]; then
   if [[ "$DISTRO" == "ubuntu" ]]; then
     ./scripts/ubuntu-install.sh
 
+    CFLAGS="$CFLAGS -Wno-deprecated-declarations"
+
     SUITESPARSE_INC=/usr/include/suitesparse
     LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
     INCLUDE_PATH=/usr/include
@@ -142,6 +154,8 @@ elif [[ "$OS" == "Darwin" ]]; then
     exit 1
   fi
 
+  CFLAGS="$CFLAGS -Wno-unused-command-line-argument"
+
   HOMEBREW_NO_AUTO_UPDATE=1 brew install openblas cmake lapack bison flex fftw suitesparse autoconf automake libtool pkgconf open-mpi boost-python3 boost numpy scipy ccache
   PKG_CONFIG_PATH="$HOMEBREW_PREFIX/opt/lapack/lib/pkgconfig:$HOMEBREW_PREFIX//opt/openblas/lib/pkgconfig"
   PATH="$HOMEBREW_PREFIX/opt/bison/bin:$HOMEBREW_PREFIX/opt/flex/bin:$HOMEBREW_PREFIX/opt/python/libexec/bin:$PATH"
@@ -149,7 +163,6 @@ elif [[ "$OS" == "Darwin" ]]; then
   CPPFLAGS="-I$HOMEBREW_PREFIX/opt/bison/include -I$HOMEBREW_PREFIX/opt/flex/include"
   LDFLAGS="-L$HOMEBREW_PREFIX/opt/libomp/lib -L$HOMEBREW_PREFIX/lib $LDFLAGS -L$HOMEBREW_PREFIX//opt/openblas/lib"
   CPPFLAGS="-I/$HOMEBREW_PREFIX/opt/libomp/include -I$HOMEBREW_PREFIX/include/suitesparse -I$HOMEBREW_PREFIX/include $CPPFLAGS -I$HOMEBREW_PREFIX//opt/openblas/include"
-
   LEX=$HOMEBREW_PREFIX/opt/flex/bin/flex
   BISON=$HOMEBREW_PREFIX/opt/bison/bin/bison
   export PKG_CONFIG_PATH PATH LDFLAGS CPPFLAGS LEX BISON
@@ -191,29 +204,29 @@ fi
 
 # Set up environment variables
 export CFLAGS="$CFLAGS -fPIC"
-export CXXFLAGS="$CFLAGS -fPIC -std=c++17 -Wno-unused-command-line-argument"
+export CXXFLAGS="$CFLAGS -fPIC -std=c++17"
 
-CCACHE=$(which ccache 2>/dev/null || echo '')
+export CXX=mpicxx
+export CC=mpicc
+export F77=mpif77
+
+export CCACHE=$(which ccache 2>/dev/null || echo '')
 # Use MPI compilers
 if [ -z "$CCACHE" ]; then
   echo "ccache not found"
-  export CXX=mpicxx
-  export CC=mpicc
-  export F77=mpif77
 else
   echo "ccache found, using $CCACHE"
-  export CXX="$CCACHE mpicxx"
-  export CC="$CCACGE mpicc"
-  export F77=mpif77
+  export CMAKE_C_COMPILER_LAUNCHER="$CCACHE"
+  export CMAKE_CXX_COMPILER_LAUNCHER="$CCACHE"
 fi
 
-export ARCHDIR="$ROOT/_build/libs"
+export BUILDDIR=_build_$OS
+export ARCHDIR="$ROOT/$BUILDDIR/libs"
 
-if [ -n "$INSTALL_XYCE" ]; then
-  export INSTALL_PATH="$INSTALL_XYCE"
-else
-  export INSTALL_PATH="$ROOT/__install"
+if [ -z "$INSTALL_PATH" ]; then
+  INSTALL_PATH="$ROOT/_install_$OS"
 fi
+export INSTALL_PATH
 
 if [ -n "$BUILD_TRILINOS" ]; then
   ./scripts/build-trilinos.sh $TRILINOS_CONFIGURE_OPTS || exit 1
@@ -232,6 +245,7 @@ fi
 if [ -n "$INSTALL_XYCE" ]; then
   export INSTALL_PATH="$INSTALL_XYCE"
   ./scripts/install-xyce.sh || exit 1
+  ./scripts/install-xdm.sh || exit 1
 fi
 
 

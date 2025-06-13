@@ -2,8 +2,8 @@
 set -e
 set -o pipefail
 
-mkdir -p _build/trilinos
-mkdir -p _build/install
+mkdir -p $BUILDDIR/trilinos
+mkdir -p $BUILDDIR/install
 
 CONFIGURE_OPTS="$@"
 
@@ -52,10 +52,10 @@ cmake \
 -DTrilinos_SET_GROUP_AND_PERMISSIONS_ON_INSTALL_BASE_DIR="$ARCHDIR" \
 $CONFIGURE_OPTS \
 -S "$ROOT/_source/trilinos" \
--B "$ROOT/_build/trilinos" 2>&1 | tee "$ROOT/_build/configure-trilinos.log"
+-B "$ROOT/$BUILDDIR/trilinos" 2>&1 | tee "$ROOT/$BUILDDIR/configure-trilinos.log"
 
 echo "Building Trilinos..."
 NCPUS="${NCPUS:-$(nproc)}"
-make -C _build/trilinos -j $NCPUS 2>&1 | tee "$ROOT/_build/build-trilinos.log"
-make -C _build/trilinos install
+make -C $BUILDDIR/trilinos -j $NCPUS 2>&1 | tee "$ROOT/$BUILDDIR/build-trilinos.log"
+make -C $BUILDDIR/trilinos install
 

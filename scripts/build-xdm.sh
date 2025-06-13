@@ -2,13 +2,15 @@
 set -e
 set -o pipefail
 
-mkdir -p "$ROOT/_build/xyce"
+mkdir -p "$ROOT/$BUILDDIR/xyce"
 
-mkdir -p _build/XDM
-mkdir -p _build/install
+mkdir -p $BUILDDIR/XDM
+mkdir -p $BUILDDIR/install
 
 CONFIGURE_OPTS="$@"
-PYTHON=${PYTHON:-$(which python)}
+PYTHON=${PYTHON:-$(which python3)}
+
+env > "$ROOT/$BUILDDIR/env-XDM.log"
 
 echo "Configuring XDM $CONFIGURE_OPTS"
 cmake \
@@ -17,11 +19,13 @@ cmake \
 -DCMAKE_LIBRARY_PATH="$LIBRARY_PATH" \
 -DCMAKE_INSTALL_PREFIX="$ARCHDIR" \
 -DPython3_EXECUTABLE=$PYTHON \
+-DCC="$CC" \
+-DCXX="$CXX" \
 $CONFIGURE_OPTS \
 -S "$ROOT/_source/XDM" \
--B "$ROOT/_build/XDM" 2>&1 | tee "$ROOT/_build/configure-XDM.log"
+-B "$ROOT/$BUILDDIR/XDM" 2>&1 | tee "$ROOT/$BUILDDIR/configure-XDM.log"
 
 echo "Building XDM..."
 NCPUS="${NCPUS:-$(nproc)}"
-make -C _build/XDM -j $NCPUS 2>&1 | tee "$ROOT/_build/build-XDM.log"
+make -C $BUILDDIR/XDM -j $NCPUS 2>&1 | tee "$ROOT/$BUILDDIR/build-XDM.log"
 

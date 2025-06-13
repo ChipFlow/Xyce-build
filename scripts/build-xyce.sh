@@ -2,23 +2,27 @@
 set -e
 set -o pipefail
 
-mkdir -p "$ROOT/_build/Xyce"
+mkdir -p "$ROOT/$BUILDDIR/Xyce"
 
 CONFIGURE_OPTS="$@"
 
 echo "Configuring Xyce $CONFIGURE_OPTS"
 
+if [ -n "$CCACHE" ]; then
+  export CC="$CCACHE $CC"
+  export CXX="$CCACHE $CXX"
+fi
 export LDFLAGS="-L$ARCHDIR/lib $LDFLAGS"
 export CPPFLAGS="-I$ARCHDIR/include $CPPFLAGS"
 
 # Get Trilinos libraries
-TRILINOS_LIBS=$(for i in _build/libs/lib/*.a ; do basename $i ;done | sed -e 's/lib/-l/' -e 's/\.a//' | tr '\n' ' ')
+TRILINOS_LIBS="-lblas -llapack -lisorropia -lzoltan -ltpetra -lkokkoskernels -lteuchosparameterlist -ltpetraclassic -lkokkoscore"
 
 pushd "$ROOT/_source/Xyce"
 ./bootstrap
 popd
 
-pushd "$ROOT/_build/Xyce"
+pushd "$ROOT/$BUILDDIR/Xyce"
 
 $ROOT/_source/Xyce/configure \
 --enable-mpi \
@@ -26,12 +30,12 @@ $ROOT/_source/Xyce/configure \
 --enable-amesos2 \
 $CONFIGURE_OPTS \
 LIBS="$TRILINOS_LIBS" \
---prefix="$INSTALL_PATH" 2>&1 | tee "$ROOT/_build/Xyce-configure.log"
+--prefix="$INSTALL_PATH" 2>&1 | tee "$ROOT/$BUILDDIR/Xyce-configure.log"
 
 popd
 
 echo "Building Xyce..."
 NCPUS="${NCPUS:-$(nproc)}"
-echo "make -C _build/Xyce -j $NCPUS V=1 2>&1 | tee \"$ROOT/_build/Xyce-build.log\""
-make -C _build/Xyce -j $NCPUS V=1 2>&1 | tee "$ROOT/_build/Xyce-build.log"
+echo "make -C $BUILDDIR/Xyce -j $NCPUS V=1 2>&1 | tee \"$ROOT/$BUILDDIR/Xyce-build.log\""
+make -C $BUILDDIR/Xyce -j $NCPUS V=1 2>&1 | tee "$ROOT/$BUILDDIR/Xyce-build.log"
 

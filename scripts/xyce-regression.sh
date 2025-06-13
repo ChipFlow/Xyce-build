@@ -3,7 +3,10 @@ set -e
 set -o pipefail
 set -x
 
-BUILD_DIR="$ROOT/_build/"
+
+BUILD_DIR="$ROOT/$BUILDDIR"
+mkdir -p $BUILD_DIR
+
 XYCE_BINARY="$BUILD_DIR/xyce/src/Xyce"
 XYCE_REGRESSION=$ROOT/_source/Xyce_Regression
 
@@ -16,6 +19,6 @@ $XYCE_REGRESSION/TestScripts/run_xyce_regressionMP \
 --numproc=$NCPUS \
 --xyce_test=$XYCE_REGRESSION \
 --taglist="${TAGLIST}" \
---output=$BUILD_DIR/Xyce_Test \
+--output=$BUILD_DIR/Xyce_Regression \
 --resultfile=$BUILD_DIR/regression.results \
 "${EXECSTRING}"
