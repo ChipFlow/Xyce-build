@@ -7,15 +7,16 @@ echo "Building in $ROOT"
 Help()
 {
    # Display Help
-   echo "ngspice build script for macOS, 64 bit x86_64 or aarch64"
+   echo "Xyce build script for Ubuntu, Windows and macOS, 64 bit x86_64 or aarch64"
    echo
    echo "Syntax: $0 [-h] [-s] [-d] [-t] [-x] [-i install-dir] [-- [<configure flags>]]"
    echo "options:"
    echo "  -d:                Debug build"
    echo "  -s:                Fetch source"
    echo "  -t:                Build Trilinos only"
+   echo "  -m:                Build XDM only"
    echo "  -x:                Build Xyce only"
-   echo "  -i:                Install Xyce in the given directory"
+   echo "  -i:                Install XDM and Xyce in the given directory"
    echo "  -r:                Run the regression suite"
    echo "  -h:                Display this help"
    echo "  <configure flags>: Arbitary options to pass to ./configure :"
@@ -30,6 +31,7 @@ Help()
 INSTALL_DEPS=1
 FETCH_SOURCE=1
 BUILD_TRILINOS=1
+BUILD_XDM=1
 BUILD_XYCE=1
 RUN_REGRESSION=1
 INSTALL_XYCE=1
@@ -43,7 +45,7 @@ echo GETOPTS
 # Process the input options. Add options as needed.        #
 ############################################################
 # Get the options
-while getopts ":hdtxsri:" option; do
+while getopts ":hdtxmsri:" option; do
   case $option in
     h) # display Help
         Help
@@ -55,6 +57,7 @@ while getopts ":hdtxsri:" option; do
     s) # Fetch source only
         FETCH_SOURCE=1
         unset BUILD_TRILINOS
+        unset BUILD_XDM
         unset BUILD_XYCE
         unset RUN_REGRESSION
         unset INSTALL_XYCE
@@ -62,6 +65,7 @@ while getopts ":hdtxsri:" option; do
     t) # Build Trilinos only
         unset FETCH_SOURCE
         BUILD_TRILINOS=1
+        unset BUILD_XDM
         unset BUILD_XYCE
         unset INSTALL_XYCE
         unset RUN_REGRESSION
@@ -69,13 +73,23 @@ while getopts ":hdtxsri:" option; do
     x) # Build Xyce only
         unset FETCH_SOURCE
         unset BUILD_TRILINOS
+        unset BUILD_XDM
         BUILD_XYCE=1
+        unset INSTALL_XYCE
+        unset RUN_REGRESSION
+        ;;
+    m) # Build XDM only
+        unset FETCH_SOURCE
+        unset BUILD_TRILINOS
+        BUILD_XDM=1
+        unset BUILD_XYCE
         unset INSTALL_XYCE
         unset RUN_REGRESSION
         ;;
     r) # Run regression for Xyce
         unset FETCH_SOURCE
         unset BUILD_TRILINOS
+        unset BUILD_XDM
         unset BUILD_XYCE
         RUN_REGRESSION=1
         unset INSTALL_XYCE
@@ -83,6 +97,7 @@ while getopts ":hdtxsri:" option; do
     i) # Install
         unset FETCH_SOURCE
         unset BUILD_TRILINOS
+        unset BUILD_XDM
         unset BUILD_XYCE
         INSTALL_XYCE=1
         INSTALL_DIR=${OPTARG}
@@ -92,7 +107,8 @@ while getopts ":hdtxsri:" option; do
         echo "Error: Invalid option"
         echo
         Help
-        exit;;
+        exit
+        ;;
   esac
 done
 
@@ -232,10 +248,12 @@ if [ -n "$BUILD_TRILINOS" ]; then
   ./scripts/build-trilinos.sh $TRILINOS_CONFIGURE_OPTS || exit 1
 fi
 
-if [ -n "$BUILD_XYCE" ]; then
+if [ -n "$BUILD_XDM" ]; then
   ./scripts/build-xdm.sh || exit 1
+fi
+
+if [ -n "$BUILD_XYCE" ]; then
   ./scripts/build-xyce.sh $CONFIGURE_OPTS || exit 1
-  #./scripts/build-xyce-cmake.sh || exit 1
 fi
 
 if [ -n "$RUN_REGRESSION" ]; then

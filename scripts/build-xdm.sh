@@ -2,7 +2,7 @@
 set -e
 set -o pipefail
 
-mkdir -p "$ROOT/$BUILDDIR/xyce"
+mkdir -p "$ROOT/$BUILDDIR/Xyce"
 
 mkdir -p $BUILDDIR/XDM
 mkdir -p $BUILDDIR/install

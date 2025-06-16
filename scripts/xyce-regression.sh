@@ -7,7 +7,7 @@ set -x
 BUILD_DIR="$ROOT/$BUILDDIR"
 mkdir -p $BUILD_DIR
 
-XYCE_BINARY="$BUILD_DIR/xyce/src/Xyce"
+XYCE_BINARY="$BUILD_DIR/Xyce/src/Xyce"
 XYCE_REGRESSION=$ROOT/_source/Xyce_Regression
 
 NCPUS="${NCPUS:-$(nproc)}"
