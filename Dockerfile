@@ -105,7 +105,7 @@ USER builder
 WORKDIR /home/builder
 
 # Run Regression
-#RUN --mount=type=cache,target=/ccache,uid=1001 ./build.sh -r
+RUN --mount=type=cache,target=/ccache,uid=1001 ./build.sh -r
 
 # Verify the installation
 RUN ls -la _install_Linux/bin/ && \
