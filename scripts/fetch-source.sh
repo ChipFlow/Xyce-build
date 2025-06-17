@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if [ -n "$CI" ]; then
+  echo "Seems we're running in CI, so resetting the source repositories"
   RESET_GIT=1
 fi
 
