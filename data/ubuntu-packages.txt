@@ -5,6 +5,7 @@ cmake
 ccache
 bison
 flex
+libfl-dev
 libblas-dev
 liblapack-dev
 libfftw3-dev
