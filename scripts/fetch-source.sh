@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -n "$CI" ]; then
+  RESET_GIT=1
+fi
+
 CloneOrUpdate()
 {
   url=$1
@@ -15,7 +19,7 @@ CloneOrUpdate()
     git -C $repo remote set-url origin $url
     git -C $repo fetch --depth=1
     git -C $repo checkout $branch
-    git -C $repo reset --hard origin/$branch
+    if [ -b "$RESET_GIT" ]; then git -C $repo reset --hard origin/$branch; fi
     git -C $repo prune --expire now
     git -C $repo repack -a -d
   fi
