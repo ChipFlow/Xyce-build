@@ -20,7 +20,7 @@ CloneOrUpdate()
     git -C $repo remote set-url origin $url
     git -C $repo fetch --depth=1
     git -C $repo checkout $branch
-    if [ -b "$RESET_GIT" ]; then git -C $repo reset --hard origin/$branch; fi
+    if [ -n "$RESET_GIT" ]; then git -C $repo reset --hard origin/$branch; fi
     git -C $repo clean -xdf
     git -C $repo prune --expire now
     git -C $repo repack -a -d
