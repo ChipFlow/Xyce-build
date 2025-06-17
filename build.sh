@@ -261,7 +261,7 @@ if [ -n "$RUN_REGRESSION" ]; then
 fi
 
 if [ -n "$INSTALL_XYCE" ]; then
-  export INSTALL_PATH="$INSTALL_XYCE"
+  export INSTALL_PATH="$INSTALL_PATH"
   ./scripts/install-xyce.sh || exit 1
   ./scripts/install-xdm.sh || exit 1
 fi
