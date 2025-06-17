@@ -39,7 +39,13 @@ BUILD_TYPE=release
 CFLAGS="-O3"
 CONFIGURE_OPTS=""
 
-echo GETOPTS
+if [ -n "$CI" ]; then
+    echo "CI Detected"
+fi
+
+if [ -n "$DOCKER_BUILD" ]; then
+    echo "Building in Docker"
+fi
 
 ############################################################
 # Process the input options. Add options as needed.        #

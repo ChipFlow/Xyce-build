@@ -9,6 +9,9 @@ COPY data/ubuntu-packages.txt data/ubuntu-packages.txt
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
+# signal its docker build
+ENV DOCKER_BUILD=1
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     $(cat data/ubuntu-packages.txt) \
