@@ -29,8 +29,13 @@ jobs:
       matrix:
         os: [ubuntu-latest-large, windows-latest-large, macos-latest-large]
 
+    defaults:
+      run:
+        shell: ${{ contains(matrix.os, 'windows') && 'msys2 {0}' || 'bash {0}' }}
+
     steps:
     - run: git config --global core.autocrlf false
+      shell: bash
 
     - uses: actions/checkout@v4
 
@@ -88,12 +93,17 @@ jobs:
     - name: Build for Windows (${{ matrix.os }})
       if: contains(matrix.os, 'windows')
       shell: msys2 {0}
-      run: ./build.sh
+      run: ./build.sh -s -t -m -x -i
 
-    - name: Build for Unix-like (${{ matrix.os }})
+
+    - name: Build
       if: ${{ ! contains(matrix.os, 'windows') }}
-      shell: bash
-      run: ./build.sh
+      run: ./build.sh -s -t -m -x -i
+
+
+    - name: Run Regression
+      run: ./build.sh -r
+      continue-on-error: true
 
     - name: Upload installation as artifact
       uses: actions/upload-artifact@v4

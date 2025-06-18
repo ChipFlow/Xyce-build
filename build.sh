@@ -13,9 +13,9 @@ Help()
    echo "options:"
    echo "  -d:                Debug build"
    echo "  -s:                Fetch source"
-   echo "  -t:                Build Trilinos only"
-   echo "  -m:                Build XDM only"
-   echo "  -x:                Build Xyce only"
+   echo "  -t:                Build Trilinos"
+   echo "  -m:                Build XDM"
+   echo "  -x:                Build Xyce"
    echo "  -i:                Install XDM and Xyce in the given directory"
    echo "  -r:                Run the regression suite"
    echo "  -h:                Display this help"
@@ -28,17 +28,6 @@ Help()
 #Defaults
 #########
 
-INSTALL_DEPS=1
-FETCH_SOURCE=1
-BUILD_TRILINOS=1
-BUILD_XDM=1
-BUILD_XYCE=1
-RUN_REGRESSION=1
-INSTALL_XYCE=1
-BUILD_TYPE=release
-CFLAGS="-O3"
-CONFIGURE_OPTS=""
-
 if [ -n "$CI" ]; then
     echo "CI Detected"
 fi
@@ -46,6 +35,16 @@ fi
 if [ -n "$DOCKER_BUILD" ]; then
     echo "Building in Docker"
 fi
+
+BUILD_TYPE=release
+CFLAGS="-O3"
+unset INSTALL_DEPS
+unset FETCH_SOURCE
+unset BUILD_TRILINOS
+unset BUILD_XDM
+unset BUILD_XYCE
+unset RUN_REGRESSION
+unset INSTALL_XYCE
 
 ############################################################
 # Process the input options. Add options as needed.        #
@@ -55,6 +54,7 @@ while getopts ":hdtxmsri:" option; do
   case $option in
     h) # display Help
         Help
+        exit 0
         ;;
     d) # debug build
         BUILD_TYPE=debug
@@ -62,52 +62,28 @@ while getopts ":hdtxmsri:" option; do
         ;;
     s) # Fetch source only
         FETCH_SOURCE=1
-        unset BUILD_TRILINOS
-        unset BUILD_XDM
-        unset BUILD_XYCE
-        unset RUN_REGRESSION
-        unset INSTALL_XYCE
+        option_passed=1
         ;;
     t) # Build Trilinos only
-        unset FETCH_SOURCE
         BUILD_TRILINOS=1
-        unset BUILD_XDM
-        unset BUILD_XYCE
-        unset INSTALL_XYCE
-        unset RUN_REGRESSION
+        option_passed=1
         ;;
     x) # Build Xyce only
-        unset FETCH_SOURCE
-        unset BUILD_TRILINOS
-        unset BUILD_XDM
         BUILD_XYCE=1
-        unset INSTALL_XYCE
-        unset RUN_REGRESSION
+        option_passed=1
         ;;
     m) # Build XDM only
-        unset FETCH_SOURCE
-        unset BUILD_TRILINOS
         BUILD_XDM=1
-        unset BUILD_XYCE
-        unset INSTALL_XYCE
-        unset RUN_REGRESSION
+        option_passed=1
         ;;
     r) # Run regression for Xyce
-        unset FETCH_SOURCE
-        unset BUILD_TRILINOS
-        unset BUILD_XDM
-        unset BUILD_XYCE
         RUN_REGRESSION=1
-        unset INSTALL_XYCE
+        option_passed=1
         ;;
     i) # Install
-        unset FETCH_SOURCE
-        unset BUILD_TRILINOS
-        unset BUILD_XDM
-        unset BUILD_XYCE
         INSTALL_XYCE=1
         INSTALL_DIR=${OPTARG}
-        unset RUN_REGRESSION
+        option_passed=1
         ;;
     \?) # Invalid option
         echo "Error: Invalid option"
@@ -118,8 +94,21 @@ while getopts ":hdtxmsri:" option; do
   esac
 done
 
+# Default options
+if [ -z $option_passed ]; then
+  INSTALL_DEPS=1
+  FETCH_SOURCE=1
+  BUILD_TRILINOS=1
+  BUILD_XDM=1
+  BUILD_XYCE=1
+  RUN_REGRESSION=1
+  INSTALL_XYCE=1
+fi
+
+
 shift  $((OPTIND-1))
-CONFIGURE_OPTS="$CONFIGURE_OPTS $@"
+
+CONFIGURE_OPTS="$@"
 TRILINOS_CONFIGURE_OPTS=""
 
 case "$OSTYPE" in
