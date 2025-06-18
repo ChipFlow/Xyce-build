@@ -32,6 +32,7 @@ jobs:
     defaults:
       run:
         shell: ${{ contains(matrix.os, 'windows') && 'msys2 {0}' || 'bash {0}' }}
+        working-directory: ${{ contains(matrix.os, 'windows') && 'c:\a\' || github.workspace }}
 
     steps:
     - run: git config --global core.autocrlf false

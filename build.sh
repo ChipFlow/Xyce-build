@@ -115,7 +115,7 @@ case "$OSTYPE" in
   linux*)   OS="Linux" ;;
   darwin*)  OS="Darwin" ;;
   win*)     OS="Windows" ;;
-  msys*)    OS="Windows_MSYS2" ;;
+  msys*)    OS="MSYS2" ;;
   cygwin*)  OS="Cygwin" ;;
   bsd*)     OS="BSD" ;;
   *)        echo "unknown: $OSTYPE" ;;
@@ -123,6 +123,8 @@ esac
 
 echo "Determined that OS is $OS"
 echo
+
+export BUILDDIR=_build_$OS
 
 if [[ "$OS" == "Linux" ]]; then
   if [ -e /etc/lsb-release ]; then
@@ -151,6 +153,10 @@ if [[ "$OS" == "Linux" ]]; then
     BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
     CMAKE_CONFIG_DIR=/usr/lib/x86_64-linux-gnu/cmake
     export BOOST_INCLUDEDIR BOOST_LIBRARYDIR CMAKE_CONFIG_DIR
+
+    # regression tests can take up to 2gb of ram, so limit max number
+    REGRESSTION_MAX_CPUS=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo)  /  3000000  ))
+    export REGRESSTION_MAX_CPUS
   else
     echo "Unknown Linux distro - please figure out the packages to install and submit an issue!"
     exit 1
@@ -202,11 +208,12 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   PYTHON=/ucrt64/usr/bin/python3
   export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
 
-  # regression tests can take up to 2gb of ram, so limit max number
-  REGRESSTION_MAX_CPUS=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo)  /  3000000  ))
-  NCPUS=$NUMBER_OF_PROCESSORS
   CFLAGS="$CFLAGS -fpermissive"
+  NCPUS=$NUMBER_OF_PROCESSORS
   export NCPUS
+
+  # keep filenames short
+  export BUILDDIR="_b"
 else
   echo "Unknown environment"
 fi
@@ -233,7 +240,6 @@ else
   export CMAKE_CXX_COMPILER_LAUNCHER="$CCACHE"
 fi
 
-export BUILDDIR=_build_$OS
 export ARCHDIR="$ROOT/$BUILDDIR/libs"
 
 if [ -z "$INSTALL_PATH" ]; then
