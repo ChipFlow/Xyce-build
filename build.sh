@@ -115,7 +115,7 @@ case "$OSTYPE" in
   linux*)   OS="Linux" ;;
   darwin*)  OS="Darwin" ;;
   win*)     OS="Windows" ;;
-  msys*)    OS="Windows_MSYS2" ;;
+  msys*)    OS="MSYS2" ;;
   cygwin*)  OS="Cygwin" ;;
   bsd*)     OS="BSD" ;;
   *)        echo "unknown: $OSTYPE" ;;
@@ -233,7 +233,7 @@ else
   export CMAKE_CXX_COMPILER_LAUNCHER="$CCACHE"
 fi
 
-export BUILDDIR=_build_$OS
+export BUILDDIR=_bld$OS
 export ARCHDIR="$ROOT/$BUILDDIR/libs"
 
 if [ -z "$INSTALL_PATH" ]; then
