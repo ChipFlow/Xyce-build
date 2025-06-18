@@ -203,7 +203,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
 
   # regression tests can take up to 2gb of ram, so limit max number
-  REGRESSTION_MAX_CPUS=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo)  /  2097152  ))
+  REGRESSTION_MAX_CPUS=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo)  /  3000000  ))
   NCPUS=$NUMBER_OF_PROCESSORS
   CFLAGS="$CFLAGS -fpermissive"
   export NCPUS
