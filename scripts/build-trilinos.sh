@@ -51,11 +51,13 @@ cmake \
 -DAMD_LIBRARY_DIRS="$LIBRARY_PATH" \
 -DTrilinos_SET_GROUP_AND_PERMISSIONS_ON_INSTALL_BASE_DIR="$ARCHDIR" \
 $CONFIGURE_OPTS \
+-G "Unix Makefiles" \
+-DCMAKE_MAKE_PROGRAM=${MAKE} \
 -S "$ROOT/_source/trilinos" \
 -B "$ROOT/$BUILDDIR/trilinos" 2>&1 | tee "$ROOT/$BUILDDIR/configure-trilinos.log"
 
 echo "Building Trilinos..."
 NCPUS="${NCPUS:-$(nproc)}"
-make -C $BUILDDIR/trilinos -j $NCPUS 2>&1 | tee "$ROOT/$BUILDDIR/build-trilinos.log"
-make -C $BUILDDIR/trilinos install
+${MAKE} -C $BUILDDIR/trilinos -j $NCPUS 2>&1 | tee "$ROOT/$BUILDDIR/build-trilinos.log"
+${MAKE} -C $BUILDDIR/trilinos install
 

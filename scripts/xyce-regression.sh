@@ -8,7 +8,7 @@ BUILD_DIR="$ROOT/$BUILDDIR"
 mkdir -p $BUILD_DIR
 
 XYCE_BINARY="$BUILD_DIR/Xyce/src/Xyce"
-XYCE_REGRESSION=$ROOT/_source/Xyce_Regression
+XYCE_REGRESSION="$ROOT/_source/Xyce_Regression"
 
 NCPUS="${NCPUS:-$(nproc)}"
 REGRESSION_MAX_CPUS="${REGRESSION_MAX_CPUS:-$NCPUS}"
@@ -21,8 +21,8 @@ eval `$XYCE_REGRESSION/TestScripts/suggestXyceTagList.sh "$XYCE_BINARY"`
 $XYCE_REGRESSION/TestScripts/run_xyce_regressionMP \
 --verbose \
 --numproc=$NCPUS \
---xyce_test=$XYCE_REGRESSION \
+--xyce_test="$XYCE_REGRESSION" \
 --taglist="${TAGLIST}" \
---output=$BUILD_DIR/Xyce_Regression \
---resultfile=$BUILD_DIR/regression.results \
+--output="$BUILD_DIR/Xyce_Regression" \
+--resultfile="$BUILD_DIR/regression.results" \
 "${EXECSTRING}"

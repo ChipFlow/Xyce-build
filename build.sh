@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export ROOT=$(pwd)
+export ROOT="$(pwd)"
 echo "Building in $ROOT"
 
 Help()
@@ -150,7 +150,8 @@ if [[ "$OS" == "Linux" ]]; then
     BOOST_INCLUDEDIR=/usr/include/boost
     BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
     CMAKE_CONFIG_DIR=/usr/lib/x86_64-linux-gnu/cmake
-    export BOOST_INCLUDEDIR BOOST_LIBRARYDIR CMAKE_CONFIG_DIR
+    MAKE="make"
+    export BOOST_INCLUDEDIR BOOST_LIBRARYDIR CMAKE_CONFIG_DIR MAKE
   else
     echo "Unknown Linux distro - please figure out the packages to install and submit an issue!"
     exit 1
@@ -176,7 +177,8 @@ elif [[ "$OS" == "Darwin" ]]; then
   CPPFLAGS="-I/$HOMEBREW_PREFIX/opt/libomp/include -I$HOMEBREW_PREFIX/include/suitesparse -I$HOMEBREW_PREFIX/include $CPPFLAGS -I$HOMEBREW_PREFIX//opt/openblas/include"
   LEX=$HOMEBREW_PREFIX/opt/flex/bin/flex
   BISON=$HOMEBREW_PREFIX/opt/bison/bin/bison
-  export PKG_CONFIG_PATH PATH LDFLAGS CPPFLAGS LEX BISON
+  MAKE="make"
+  export PKG_CONFIG_PATH PATH LDFLAGS CPPFLAGS LEX BISON MAKE
 
   SUITESPARSE_INC=$HOMEBREW_PREFIX/include/suitesparse
   LIBRARY_PATH=$HOMEBREW_PREFIX/lib
@@ -190,9 +192,12 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   # check we have pacman
   pacman --version
 
+  powershell -File ./scripts/set-path-length.ps1
+
   ./scripts/windows-install.sh
 
-  TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64"
+  CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64 -DCMAKE_OBJECT_PATH_MAX=10000"
+  TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64 -DCMAKE_OBJECT_PATH_MAX=10000"
   SUITESPARSE_INC=/ucrt64/include/suitesparse
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
   INCLUDE_PATH=/ucrt64/include
@@ -200,7 +205,8 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   BOOST_INCLUDEDIR=/ucrt64/include/boost
   BOOST_LIBRARYDIR=/ucrt64/lib/
   PYTHON=/ucrt64/usr/bin/python3
-  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
+  MAKE=/ucrt64/bin/mingw32-make
+  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR MAKE
 
   # regression tests can take up to 2gb of ram, so limit max number
   REGRESSTION_MAX_CPUS=$(( $(awk '/MemTotal/ {print $2}' /proc/meminfo)  /  3000000  ))
