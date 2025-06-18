@@ -16,7 +16,9 @@ pacboy -S --needed \
   suitesparse \
   pkgconf \
   boost \
-  boost-libs
+  boost-libs \
+  automake \
+  autoconf 
 
 curl -L -O https://github.com/microsoft/Microsoft-MPI/releases/download/v10.1.1/msmpisetup.exe
 ./msmpisetup.exe -unattend -force

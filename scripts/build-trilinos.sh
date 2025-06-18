@@ -51,6 +51,8 @@ cmake \
 -DAMD_LIBRARY_DIRS="$LIBRARY_PATH" \
 -DTrilinos_SET_GROUP_AND_PERMISSIONS_ON_INSTALL_BASE_DIR="$ARCHDIR" \
 $CONFIGURE_OPTS \
+-G "Unix Makefiles" \
+-DCMAKE_MAKE_PROGRAM=${MAKE} \
 -S "$ROOT/_source/trilinos" \
 -B "$ROOT/$BUILDDIR/trilinos" 2>&1 | tee "$ROOT/$BUILDDIR/configure-trilinos.log"
 
