@@ -27,5 +27,5 @@ $CONFIGURE_OPTS \
 
 echo "Building XDM..."
 NCPUS="${NCPUS:-$(nproc)}"
-make -C $BUILDDIR/XDM -j $NCPUS 2>&1 | tee "$ROOT/$BUILDDIR/build-XDM.log"
+${MAKE} -C $BUILDDIR/XDM -j $NCPUS 2>&1 | tee "$ROOT/$BUILDDIR/build-XDM.log"
 
