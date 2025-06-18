@@ -11,6 +11,10 @@ XYCE_BINARY="$BUILD_DIR/Xyce/src/Xyce"
 XYCE_REGRESSION=$ROOT/_source/Xyce_Regression
 
 NCPUS="${NCPUS:-$(nproc)}"
+REGRESSION_MAX_CPUS="${REGRESSION_MAX_CPUS:-$NCPUS}"
+if [[ $NCPUS -gt $REGRESSION_MAX_CPUS ]]; then
+  NCPUS=$REGRESSION_MAX_CPUS
+fi
 
 EXECSTRING="mpirun -np 2 $XYCE_BINARY"
 eval `$XYCE_REGRESSION/TestScripts/suggestXyceTagList.sh "$XYCE_BINARY"`
