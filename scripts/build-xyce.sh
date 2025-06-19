@@ -24,13 +24,14 @@ popd
 
 pushd "$ROOT/$BUILDDIR/Xyce"
 
-$ROOT/_source/Xyce/configure \
+( $ROOT/_source/Xyce/configure \
 --enable-mpi \
 --enable-stokhos \
 --enable-amesos2 \
 $CONFIGURE_OPTS \
 LIBS="$TRILINOS_LIBS" \
---prefix="$INSTALL_PATH" 2>&1 | tee "$ROOT/$BUILDDIR/Xyce-configure.log"
+--prefix="$INSTALL_PATH" 2>&1 || cat config.log ) \
+ | tee "$ROOT/$BUILDDIR/Xyce-configure.log"
 
 popd
 
