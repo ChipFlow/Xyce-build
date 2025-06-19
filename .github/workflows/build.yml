@@ -27,7 +27,7 @@ jobs:
 
       # To add more build types (Release, Debug, RelWithDebInfo, etc.) customize the build_type list.
       matrix:
-        os: [ubuntu-latest-large, windows-latest-large, macos-latest-large, windows-11-arm]
+        os: [ubuntu-latest-large, windows-latest-large, macos-latest-large] # windows-11-arm doesnt have working msys2 yet
 
     defaults:
       run:
@@ -54,6 +54,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       if: contains(matrix.os, 'windows')
       with:
+        msystem: UCRT64
         update: false
         release: false
         cache: true

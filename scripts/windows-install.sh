@@ -1,5 +1,5 @@
 #!/bin/bash
-d# Install dependencies using apt
+# Install dependencies using apt
 echo "Installing dependencies..."
 pacman -S --needed \
   bison \
