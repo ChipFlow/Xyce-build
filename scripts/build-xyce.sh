@@ -20,6 +20,8 @@ TRILINOS_LIBS="-lisorropia -lzoltan -ltpetra -lkokkoskernels -lteuchosparameterl
 
 pushd "$ROOT/_source/Xyce"
 ./bootstrap
+patch -p1 < $ROOT/data/mpi64.patch
+
 popd
 
 pushd "$ROOT/$BUILDDIR/Xyce"

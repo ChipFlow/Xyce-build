@@ -212,7 +212,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   PYTHON=/ucrt64/usr/bin/python3
   export LDFLAGS CPPFLAGS SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
 
-  CFLAGS="$CFLAGS -fpermissive"
+  CFLAGS="$CFLAGS -fpermissive -Wno-deprecated-declarations"
   NCPUS=$NUMBER_OF_PROCESSORS
   export NCPUS
 

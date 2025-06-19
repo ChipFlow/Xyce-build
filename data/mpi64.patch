@@ -1,0 +1,48 @@
+diff --git a/src/ParallelDistPKG/N_PDS_MPI.h b/src/ParallelDistPKG/N_PDS_MPI.h
+index 2e3d80b..f7bd96b 100644
+--- a/src/ParallelDistPKG/N_PDS_MPI.h
++++ b/src/ParallelDistPKG/N_PDS_MPI.h
+@@ -272,25 +272,25 @@ struct Datatype<unsigned long>
+   }
+ };
+ 
+-// #ifdef MPI_LONG_LONG_INT
+-// template <>
+-// struct Datatype<long long>
+-// {
+-//   static MPI_Datatype type() {
+-//     return MPI_LONG_LONG_INT;
+-//   }
+-// };
+-// #endif
++#ifdef MPI_LONG_LONG_INT
++template <>
++struct Datatype<long long>
++{
++  static MPI_Datatype type() {
++    return MPI_LONG_LONG_INT;
++  }
++};
++#endif
+ 
+-// #ifdef MPI_UNSIGNED_LONG_LONG_INT
+-// template <>
+-// struct Datatype<unsigned long long>
+-// {
+-//   static MPI_Datatype type() {
+-//     return MPI_UNSIGNED_LONG_LONG_INT;
+-//   }
+-// };
+-// #endif
++#ifdef MPI_UNSIGNED_LONG_LONG_INT
++template <>
++struct Datatype<unsigned long long>
++{
++  static MPI_Datatype type() {
++    return MPI_UNSIGNED_LONG_LONG_INT;
++  }
++};
++#endif
+ 
+ template <>
+ struct Datatype<float>

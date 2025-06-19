@@ -63,6 +63,7 @@ jobs:
           git
           bison
           flex
+          patch
         pacboy: |
           toolchain
           autotools
