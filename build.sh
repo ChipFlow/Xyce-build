@@ -202,6 +202,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
 
   TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas -DLAPACK_LIBRARY_NAMES=lapack"
   LDFLAGS="-L/urtc/lib/ -lblas -llapack"
+  CPPFLAGS="-I/usr/include -I/ucrt64/include"
   SUITESPARSE_INC=/ucrt64/include/suitesparse
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
   INCLUDE_PATH=/ucrt64/include
@@ -209,7 +210,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   BOOST_INCLUDEDIR=/ucrt64/include/boost
   BOOST_LIBRARYDIR=/ucrt64/lib/
   PYTHON=/ucrt64/usr/bin/python3
-  export LDFLAGS SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
+  export LDFLAGS CPPFLAGS SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
 
   CFLAGS="$CFLAGS -fpermissive"
   NCPUS=$NUMBER_OF_PROCESSORS
