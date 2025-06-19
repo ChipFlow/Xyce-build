@@ -40,16 +40,6 @@ jobs:
 
     - uses: actions/checkout@v4
 
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-
-    - name: Cache Sources
-      id: cache-sources
-      uses: actions/cache@v4
-      with:
-        path: _source
-        key: ${{ runner.os }}-sources
-
     - name: Cache Homebrew Packages
       if: contains(matrix.os, 'macos')
       id: cache-homebrew-packages
@@ -90,6 +80,17 @@ jobs:
           mingw-w64-ucrt-x86_64-boost-libs
           mingw-w64-ucrt-x86_64-python-numpy
           mingw-w64-ucrt-x86_64-python
+
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+
+    - name: Cache Sources
+      id: cache-sources
+      uses: actions/cache@v4
+      with:
+        path: _source
+        key: ${{ runner.os }}-sources
+
 
     - name: Build for Windows (${{ matrix.os }})
       if: contains(matrix.os, 'windows')
