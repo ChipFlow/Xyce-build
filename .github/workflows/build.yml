@@ -32,13 +32,13 @@ jobs:
     defaults:
       run:
         shell: ${{ contains(matrix.os, 'windows') && 'msys2 {0}' || 'bash {0}' }}
-        working-directory: ${{ contains(matrix.os, 'windows') && 'c:\a\' || github.workspace }}
 
     steps:
     - run: git config --global core.autocrlf false
       shell: bash
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v4.2.2
+
 
     - name: Cache Homebrew Packages
       if: contains(matrix.os, 'macos')
@@ -91,11 +91,15 @@ jobs:
         path: _source
         key: ${{ runner.os }}-sources
 
-
+    # Horrible things to reduce path length in build..
     - name: Build for Windows (${{ matrix.os }})
       if: contains(matrix.os, 'windows')
       shell: msys2 {0}
-      run: ./build.sh -s -t -m -x -i
+      working-directory: 'c:\a\'
+      run: |
+        mv /c/a/Xyce-build/Xyce-build /c/a/wb
+        cd /c/a/wb && ./build.sh -s -t -m -x -i
+        mv  /c/a/wb /c/a/Xyce-build/Xyce-build
 
 
     - name: Build
