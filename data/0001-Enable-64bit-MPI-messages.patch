@@ -1,0 +1,56 @@
+From 1c8dcbb3839c6bc3efea351a48667b3bbfcf26bd Mon Sep 17 00:00:00 2001
+From: Rob Taylor <rob.taylor@chipflow.io>
+Date: Sun, 22 Jun 2025 22:09:00 +0100
+Subject: [PATCH] Enable 64bit MPI messages
+
+---
+ src/ParallelDistPKG/N_PDS_MPI.h | 32 ++++++++++++++------------------
+ 1 file changed, 14 insertions(+), 18 deletions(-)
+
+diff --git a/src/ParallelDistPKG/N_PDS_MPI.h b/src/ParallelDistPKG/N_PDS_MPI.h
+index 2e3d80b..bdb1569 100644
+--- a/src/ParallelDistPKG/N_PDS_MPI.h
++++ b/src/ParallelDistPKG/N_PDS_MPI.h
+@@ -272,25 +272,21 @@ struct Datatype<unsigned long>
+   }
+ };
+ 
+-// #ifdef MPI_LONG_LONG_INT
+-// template <>
+-// struct Datatype<long long>
+-// {
+-//   static MPI_Datatype type() {
+-//     return MPI_LONG_LONG_INT;
+-//   }
+-// };
+-// #endif
++template <>
++struct Datatype<long long>
++{
++  static MPI_Datatype type() {
++    return MPI_LONG_LONG;
++  }
++};
+ 
+-// #ifdef MPI_UNSIGNED_LONG_LONG_INT
+-// template <>
+-// struct Datatype<unsigned long long>
+-// {
+-//   static MPI_Datatype type() {
+-//     return MPI_UNSIGNED_LONG_LONG_INT;
+-//   }
+-// };
+-// #endif
++template <>
++struct Datatype<unsigned long long>
++{
++  static MPI_Datatype type() {
++    return MPI_UNSIGNED_LONG_LONG;
++  }
++};
+ 
+ template <>
+ struct Datatype<float>
+-- 
+2.39.5 (Apple Git-154)
+

@@ -20,6 +20,8 @@ TRILINOS_LIBS="-lisorropia -lzoltan -ltpetra -lkokkoskernels -lteuchosparameterl
 
 pushd "$ROOT/_source/Xyce"
 ./bootstrap
+git apply $ROOT/data/0001-Enable-64bit-MPI-messages.patch
+
 popd
 
 pushd "$ROOT/$BUILDDIR/Xyce"

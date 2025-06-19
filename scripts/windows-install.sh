@@ -6,6 +6,7 @@ pacman -S --needed \
   flex \
   autoconf \
   automake \
+  patch \
   pacboy
 
 pacboy -S --needed \
