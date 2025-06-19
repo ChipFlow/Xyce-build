@@ -107,7 +107,6 @@ COPY --chown=builder:builder scripts/*install*  /home/builder/scripts/
 USER builder
 WORKDIR /home/builder
 
-# Run Regression
 RUN --mount=type=cache,target=/ccache,uid=1001 ./build.sh -r
 
 # Verify the installation
