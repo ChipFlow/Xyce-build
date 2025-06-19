@@ -16,7 +16,7 @@ export LDFLAGS="-L$ARCHDIR/lib $LDFLAGS"
 export CPPFLAGS="-I$ARCHDIR/include $CPPFLAGS"
 
 # Get Trilinos libraries
-TRILINOS_LIBS="-lblas -llapack -lisorropia -lzoltan -ltpetra -lkokkoskernels -lteuchosparameterlist -ltpetraclassic -lkokkoscore"
+TRILINOS_LIBS="-lisorropia -lzoltan -ltpetra -lkokkoskernels -lteuchosparameterlist -ltpetraclassic -lkokkoscore"
 
 pushd "$ROOT/_source/Xyce"
 ./bootstrap

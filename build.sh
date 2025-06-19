@@ -147,7 +147,8 @@ if [[ "$OS" == "Linux" ]]; then
     SUITESPARSE_INC=/usr/include/suitesparse
     LIBRARY_PATH=/usr/lib/x86_64-linux-gnu
     INCLUDE_PATH=/usr/include
-    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH
+    LDFLAGS="-lblas -llapack"
+    export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH LDFLAGS
 
     BOOST_INCLUDEDIR=/usr/include/boost
     BOOST_LIBRARYDIR=/usr/lib/x86_64-linux-gnu
@@ -188,7 +189,8 @@ elif [[ "$OS" == "Darwin" ]]; then
   LIBRARY_PATH=$HOMEBREW_PREFIX/lib
   INCLUDE_PATH=$HOMEBREW_PREFIX/include
   BOOST_ROOT=$HOMEBREW_PREFIX
-  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT
+  LDFLAGS="-lblas -llapack"
+  export SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT LDFLAGS
 
   NCPUS=$(sysctl -n hw.logicalcpu)
   export NCPUS
