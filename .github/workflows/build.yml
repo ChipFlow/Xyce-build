@@ -63,6 +63,7 @@ jobs:
           git
           bison
           flex
+          patch
         pacboy: |
           toolchain
           autotools
@@ -71,8 +72,8 @@ jobs:
           ccache
           make
           msmpi
-          openblas64
-          lapack64
+          openblas
+          lapack
           fftw
           suitesparse
           msmpi
