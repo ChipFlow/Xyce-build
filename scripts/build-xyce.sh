@@ -20,8 +20,11 @@ TRILINOS_LIBS="-lisorropia -lzoltan -ltpetra -lkokkoskernels -lteuchosparameterl
 
 pushd "$ROOT/_source/Xyce"
 ./bootstrap
-git apply $ROOT/data/0001-Enable-64bit-MPI-messages.patch
+git apply $ROOT/data/*.patch
 
+echo "Getting timedatestamp"
+./utils/XyceDatestamp.sh "$ROOT/_source/Xyce"
+echo
 popd
 
 pushd "$ROOT/$BUILDDIR/Xyce"

@@ -1,0 +1,21 @@
+From 8aa2f41f8fe8eb1e82a9beba6a2643be7a88c974 Mon Sep 17 00:00:00 2001
+From: Rob Taylor <rob.taylor@chipflow.io>
+Date: Sun, 22 Jun 2025 23:00:33 +0100
+Subject: [PATCH] Fix datetimestamp when no tags available
+
+diff --git a/utils/XyceDatestamp.sh b/utils/XyceDatestamp.sh
+index a1d78345..2a052a98 100755
+--- a/utils/XyceDatestamp.sh
++++ b/utils/XyceDatestamp.sh
+@@ -5,7 +5,7 @@ DATESTR=`date +%Y%m%d%H%M`
+ cd $SRCDIR
+ if [ -e .git ]
+ then
+-    GITSHA=`git describe --dirty`
++    GITSHA=`git describe --dirty --all`
+     DATESTR="${DATESTR}-(${GITSHA})"
+ fi
+ echo $DATESTR
+-- 
+2.39.5 (Apple Git-154)
+
