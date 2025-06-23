@@ -126,6 +126,11 @@ echo
 
 export BUILDDIR=_build_$OS
 
+if [ -n "$FETCH_SOURCE" ]; then
+  ./scripts/fetch-source.sh
+fi
+
+
 if [[ "$OS" == "Linux" ]]; then
   if [ -e /etc/lsb-release ]; then
     DISTRO=$( cat /etc/lsb-release | tr [:upper:] [:lower:] | grep -Poi '(debian|ubuntu|red hat|centos)' | uniq )
@@ -218,12 +223,12 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
 
   # keep filenames short
   export BUILDDIR="_b"
+  # Windows needs a patch to build sucessfully :(
+  if [ -n "$BUILD_XYCE" ]; then
+    git -C $ROOT/_source/Xyce apply $ROOT/data/windows/*.patch
+  fi
 else
   echo "Unknown environment"
-fi
-
-if [ -n "$FETCH_SOURCE" ]; then
-  ./scripts/fetch-source.sh
 fi
 
 # Set up environment variables
