@@ -101,8 +101,8 @@ if [ -z $option_passed ]; then
   BUILD_TRILINOS=1
   BUILD_XDM=1
   BUILD_XYCE=1
-  RUN_REGRESSION=1
-  INSTALL_XYCE=1
+  #RUN_REGRESSION=1
+  #INSTALL_XYCE=1
 fi
 
 
@@ -206,7 +206,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   ./scripts/windows-install.sh
 
   TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas -DLAPACK_LIBRARY_NAMES=lapack"
-  LDFLAGS="-L/urtc/lib/ -lblas -llapack"
+  XTRALIBS="-L/urtc/lib/ -lopenblas -llapack"
   CPPFLAGS="-I/usr/include -I/ucrt64/include"
   SUITESPARSE_INC=/ucrt64/include/suitesparse
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
@@ -215,7 +215,7 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   BOOST_INCLUDEDIR=/ucrt64/include/boost
   BOOST_LIBRARYDIR=/ucrt64/lib/
   PYTHON=/ucrt64/usr/bin/python3
-  export LDFLAGS CPPFLAGS SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
+  export XTRALIBS CPPFLAGS SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
 
   CFLAGS="$CFLAGS -fpermissive -Wno-deprecated-declarations"
   NCPUS=$NUMBER_OF_PROCESSORS

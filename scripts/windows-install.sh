@@ -13,8 +13,8 @@ pacboy -S --needed \
   cmake \
   make \
   msmpi \
-  openblas64 \
-  lapack64 \
+  openblas \
+  lapack \
   fftw \
   suitesparse \
   msmpi \
