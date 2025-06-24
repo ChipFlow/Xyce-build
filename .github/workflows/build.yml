@@ -93,6 +93,16 @@ jobs:
         path: _source
         key: ${{ runner.os }}-sources
 
+    - name: Cache Trilinos build
+      id: cache-build
+      uses: actions/cache@v4
+      with:
+        path: |
+          _build_*/trilinos
+          _b/trilinos
+        key: ${{ runner.os }}-trilinos-${{ hashFiles('build.sh','scripts/*trilinos*', 'scripts/fetch-source.sh') }}
+
+
     # Horrible things to reduce path length in build..
     - name: Build for Windows (${{ matrix.os }})
       if: contains(matrix.os, 'windows')

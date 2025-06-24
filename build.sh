@@ -245,8 +245,7 @@ if [ -z "$CCACHE" ]; then
   echo "ccache not found"
 else
   echo "ccache found, using $CCACHE"
-  export CMAKE_C_COMPILER_LAUNCHER="$CCACHE"
-  export CMAKE_CXX_COMPILER_LAUNCHER="$CCACHE"
+  export TRILINOS_CONFIGURE_OPTS="$TRILINOS_CONFIGURE_OPTS -DCMAKE_C_COMPILER_LAUNCHER=\"$CCACHE\" -DCMAKE_CXX_COMPILER_LAUNCHER=\"$CCACHE\""
 fi
 
 export ARCHDIR="$ROOT/$BUILDDIR/libs"
