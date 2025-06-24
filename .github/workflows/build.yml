@@ -123,9 +123,7 @@ jobs:
 
 
     - name: Build rest
-      if: ${{ ! contains(matrix.os, 'windows') }}
       run: ./build.sh -m -x -i
-
 
     - name: Run Regression
       run: ./build.sh -r
