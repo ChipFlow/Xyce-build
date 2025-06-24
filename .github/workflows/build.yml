@@ -98,8 +98,8 @@ jobs:
       uses: actions/cache@v4
       with:
         path: |
-          _build_*/trilinos
-          _b/trilinos
+          _build_*/libs
+          _b/libs
         key: ${{ runner.os }}-trilinos-${{ hashFiles('build.sh','scripts/*trilinos*', 'scripts/fetch-source.sh') }}
 
 
