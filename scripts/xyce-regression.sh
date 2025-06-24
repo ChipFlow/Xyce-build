@@ -16,6 +16,14 @@ if [[ $NCPUS -gt $REGRESSION_MAX_CPUS ]]; then
   NCPUS=$REGRESSION_MAX_CPUS
 fi
 
+echo
+echo "Running Xyce regression suite. Using Binary $XYCE_BINARY with $XYCE_REGRESSION"
+echo
+echo "Testing $XYCE_BINARY"
+$XYCE_BINARY || echo "$XYCE_BINARY failed"
+echo "Testing mpirun"
+mpirun -np 2 $XYCE_BINARY || echo "mpirun -np 2 $XYCE_BINARY failed"
+
 EXECSTRING="mpirun -np 2 $XYCE_BINARY"
 eval `$XYCE_REGRESSION/TestScripts/suggestXyceTagList.sh "$XYCE_BINARY"`
 $XYCE_REGRESSION/TestScripts/run_xyce_regressionMP \
