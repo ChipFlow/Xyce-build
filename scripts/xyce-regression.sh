@@ -21,10 +21,10 @@ echo "Running Xyce regression suite. Using Binary $XYCE_BINARY with $XYCE_REGRES
 echo
 echo "Testing $XYCE_BINARY"
 $XYCE_BINARY || echo "$XYCE_BINARY failed"
-echo "Testing mpirun"
-mpirun -np 2 $XYCE_BINARY || echo "mpirun -np 2 $XYCE_BINARY failed"
+echo "Testing mpiexec"
+mpiexec -np 2 $XYCE_BINARY || echo "mpirun -np 2 $XYCE_BINARY failed"
 
-EXECSTRING="mpirun -np 2 $XYCE_BINARY"
+EXECSTRING="mpiexec -np 2 $XYCE_BINARY"
 eval `$XYCE_REGRESSION/TestScripts/suggestXyceTagList.sh "$XYCE_BINARY"`
 $XYCE_REGRESSION/TestScripts/run_xyce_regressionMP \
 --verbose \

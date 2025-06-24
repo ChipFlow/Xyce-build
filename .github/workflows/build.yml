@@ -31,6 +31,8 @@ jobs:
     defaults:
       run:
         shell: ${{ contains(matrix.os, 'windows') && 'msys2 {0}' || 'bash {0}' }}
+    env:
+      MSYS2_PATH_TYPE: 'inherit'
 
     steps:
     - run: git config --global core.autocrlf false
@@ -63,6 +65,7 @@ jobs:
           bison
           flex
           patch
+          bc
         pacboy: |
           toolchain
           autotools

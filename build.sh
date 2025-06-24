@@ -205,6 +205,8 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
 
   ./scripts/windows-install.sh
 
+  export PATH="$PATH:/c/Program Files/Microsoft MPI/Bin/"
+
   TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas -DLAPACK_LIBRARY_NAMES=lapack"
   XTRALIBS="-L/urtc/lib/ -lopenblas -llapack"
   CPPFLAGS="-I/usr/include -I/ucrt64/include"
