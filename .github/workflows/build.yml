@@ -99,9 +99,9 @@ jobs:
       shell: msys2 {0}
       working-directory: 'c:\a\'
       run: |
-        mv /c/a/Xyce-build/Xyce-build /c/a/wb
+        mv $GITHUB_WORKSPACE /c/a/wb
         cd /c/a/wb && ./build.sh -s -t -m -x -i
-        mv  /c/a/wb /c/a/Xyce-build/Xyce-build
+        mv  /c/a/wb/* $GITHUB_WORKSPACE
 
 
     - name: Build
