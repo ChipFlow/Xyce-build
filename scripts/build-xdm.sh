@@ -21,6 +21,7 @@ cmake \
 -DPython3_EXECUTABLE=$PYTHON \
 -DCC="$CC" \
 -DCXX="$CXX" \
+-Wno-dev \
 $CONFIGURE_OPTS \
 -S "$ROOT/_source/XDM" \
 -B "$ROOT/$BUILDDIR/XDM" 2>&1 | tee "$ROOT/$BUILDDIR/configure-XDM.log"

@@ -17,8 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
-      fail-fast: false
+      fail-fast: true
 
       # Set up a matrix to run the following 3 configurations:
       # 1. <Windows, Release, latest MPI toolchain on the default runner image, default generator>
@@ -32,6 +31,8 @@ jobs:
     defaults:
       run:
         shell: ${{ contains(matrix.os, 'windows') && 'msys2 {0}' || 'bash {0}' }}
+    env:
+      MSYS2_PATH_TYPE: 'inherit'
 
     steps:
     - run: git config --global core.autocrlf false
@@ -63,6 +64,8 @@ jobs:
           git
           bison
           flex
+          patch
+          bc
         pacboy: |
           toolchain
           autotools
@@ -71,8 +74,8 @@ jobs:
           ccache
           make
           msmpi
-          openblas64
-          lapack64
+          openblas
+          lapack
           fftw
           suitesparse
           msmpi
@@ -92,21 +95,37 @@ jobs:
         path: _source
         key: ${{ runner.os }}-sources
 
+    - name: Cache Trilinos build
+      id: cache-trilinos
+      uses: actions/cache@v4
+      with:
+        path: |
+          _build_*/libs
+          _b/libs
+        key: ${{ runner.os }}-trilinos-${{ hashFiles('build.sh','scripts/*trilinos*', 'scripts/fetch-source.sh') }}
+
+
+    - name: Fetch Source
+      run: ./build.sh -s
+
+    - name: Build Trilinos
+      if: ${{ steps.cache-trilinos.outputs.cache-hit != 'true' && ! contains(matrix.os, 'windows') }}
+      run: ./build.sh -t
+
+
     # Horrible things to reduce path length in build..
-    - name: Build for Windows (${{ matrix.os }})
-      if: contains(matrix.os, 'windows')
+    - name: Build Trilinos for Windows
+      if: ${{ steps.cache-trilinos.outputs.cache-hit != 'true' && contains(matrix.os, 'windows') }}
       shell: msys2 {0}
       working-directory: 'c:\a\'
       run: |
-        mv /c/a/Xyce-build/Xyce-build /c/a/wb
-        cd /c/a/wb && ./build.sh -s -t -m -x -i
-        mv  /c/a/wb /c/a/Xyce-build/Xyce-build
+        mv $GITHUB_WORKSPACE /c/a/wb
+        cd /c/a/wb && ./build.sh -t
+        mv  /c/a/wb/* $GITHUB_WORKSPACE
 
 
-    - name: Build
-      if: ${{ ! contains(matrix.os, 'windows') }}
-      run: ./build.sh -s -t -m -x -i
-
+    - name: Build rest
+      run: ./build.sh -m -x -i
 
     - name: Run Regression
       run: ./build.sh -r

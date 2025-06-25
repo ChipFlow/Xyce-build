@@ -101,8 +101,8 @@ if [ -z $option_passed ]; then
   BUILD_TRILINOS=1
   BUILD_XDM=1
   BUILD_XYCE=1
-  RUN_REGRESSION=1
-  INSTALL_XYCE=1
+  #RUN_REGRESSION=1
+  #INSTALL_XYCE=1
 fi
 
 
@@ -125,6 +125,11 @@ echo "Determined that OS is $OS"
 echo
 
 export BUILDDIR=_build_$OS
+
+if [ -n "$FETCH_SOURCE" ]; then
+  ./scripts/fetch-source.sh
+fi
+
 
 if [[ "$OS" == "Linux" ]]; then
   if [ -e /etc/lsb-release ]; then
@@ -200,8 +205,11 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
 
   ./scripts/windows-install.sh
 
-  TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas_64 -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas64 -DLAPACK_LIBRARY_NAMES=lapack64"
-  LDFLAGS="-L/urtc/lib/ -lblas64 -llapack64"
+  export PATH="$PATH:/c/Program Files/Microsoft MPI/Bin/"
+
+  TRILINOS_CONFIGURE_OPTS="-DBLAS_LIBRARY_NAMES=openblas -DBLAS_INCLUDE_DIRS=/ucrt64/include/openblas -DLAPACK_LIBRARY_NAMES=lapack"
+  XTRALIBS="-L/urtc/lib/ -lopenblas -llapack"
+  CPPFLAGS="-I/usr/include -I/ucrt64/include"
   SUITESPARSE_INC=/ucrt64/include/suitesparse
   LIBRARY_PATH=/ucrt64/lib/x86_64-linux-gnu
   INCLUDE_PATH=/ucrt64/include
@@ -209,20 +217,20 @@ elif [[ "$OS" == "Windows_MSYS2" || "$OS" == "Cygwin" ]]; then
   BOOST_INCLUDEDIR=/ucrt64/include/boost
   BOOST_LIBRARYDIR=/ucrt64/lib/
   PYTHON=/ucrt64/usr/bin/python3
-  export LDFLAGS SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
+  export XTRALIBS CPPFLAGS SUITESPARSE_INC LIBRARY_PATH INCLUDE_PATH BOOST_ROOT BOOST_INCLUDEDIR BOOST_LIBRARYDIR
 
-  CFLAGS="$CFLAGS -fpermissive"
+  CFLAGS="$CFLAGS -fpermissive -Wno-deprecated-declarations"
   NCPUS=$NUMBER_OF_PROCESSORS
   export NCPUS
 
   # keep filenames short
   export BUILDDIR="_b"
+  # Windows needs a patch to build sucessfully :(
+  if [ -n "$BUILD_XYCE" ]; then
+    git -C $ROOT/_source/Xyce apply $ROOT/data/windows/*.patch
+  fi
 else
   echo "Unknown environment"
-fi
-
-if [ -n "$FETCH_SOURCE" ]; then
-  ./scripts/fetch-source.sh
 fi
 
 # Set up environment variables
@@ -239,9 +247,11 @@ if [ -z "$CCACHE" ]; then
   echo "ccache not found"
 else
   echo "ccache found, using $CCACHE"
-  export CMAKE_C_COMPILER_LAUNCHER="$CCACHE"
-  export CMAKE_CXX_COMPILER_LAUNCHER="$CCACHE"
+  TRILINOS_CONFIGURE_OPTS="$TRILINOS_CONFIGURE_OPTS -DCMAKE_C_COMPILER_LAUNCHER=$CCACHE -DCMAKE_CXX_COMPILER_LAUNCHER=$CCACHE"
 fi
+
+# make cmake quieter..
+TRILINOS_CONFIGRURE_OPTS="$TRILINOS_CONFIGRURE_OPTS-Wno-dev"
 
 export ARCHDIR="$ROOT/$BUILDDIR/libs"
 

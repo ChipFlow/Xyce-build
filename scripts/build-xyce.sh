@@ -20,6 +20,11 @@ TRILINOS_LIBS="-lisorropia -lzoltan -ltpetra -lkokkoskernels -lteuchosparameterl
 
 pushd "$ROOT/_source/Xyce"
 ./bootstrap
+git apply $ROOT/data/*.patch
+
+echo "Getting timedatestamp"
+./utils/XyceDatestamp.sh "$ROOT/_source/Xyce"
+echo
 popd
 
 pushd "$ROOT/$BUILDDIR/Xyce"
@@ -38,5 +43,5 @@ popd
 echo "Building Xyce..."
 NCPUS="${NCPUS:-$(nproc)}"
 echo "make -C $BUILDDIR/Xyce -j $NCPUS V=1 2>&1 | tee \"$ROOT/$BUILDDIR/Xyce-build.log\""
-make -C $BUILDDIR/Xyce -j $NCPUS V=1 2>&1 | tee "$ROOT/$BUILDDIR/Xyce-build.log"
+make -C $BUILDDIR/Xyce -j $NCPUS V=1 2>&1 | tee "$ROOT/$BUILDDIR/Xyce-build.log" || true
 

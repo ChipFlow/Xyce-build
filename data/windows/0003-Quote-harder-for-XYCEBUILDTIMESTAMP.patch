@@ -1,0 +1,23 @@
+From 89d2421132e0190dd9b6c861ee4f268f499018f7 Mon Sep 17 00:00:00 2001
+From: Rob Taylor <rob.taylor@chipflow.io>
+Date: Mon, 23 Jun 2025 13:51:42 +0100
+Subject: [PATCH] Quote harder for XYCEBUILDTIMESTAMP
+
+---
+ src/UtilityPKG/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/UtilityPKG/Makefile.am b/src/UtilityPKG/Makefile.am
+index f76b3756..e9b3de5c 100644
+--- a/src/UtilityPKG/Makefile.am
++++ b/src/UtilityPKG/Makefile.am
+@@ -1,5 +1,5 @@
+ 
+-AM_CPPFLAGS = @Xyce_INCS@ -DXYCEBUILDTIMESTAMP=\"`$(top_srcdir)/utils/XyceDatestamp.sh $(top_srcdir)`\"
++AM_CPPFLAGS = @Xyce_INCS@ -DXYCEBUILDTIMESTAMP=\\\"`$(top_srcdir)/utils/XyceDatestamp.sh $(top_srcdir)`\\\"
+ 
+ SUBDIRS = ExpressionSrc
+ 
+-- 
+2.39.5 (Apple Git-154)
+
